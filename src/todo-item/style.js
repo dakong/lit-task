@@ -16,7 +16,7 @@ export default css`
 		display: none;
 	}
 
-	#todo-item {
+	.todo-item {
 		border-width: 0 0 1px;
 		border-style: solid;
 		border-color: ${gray300};
@@ -26,39 +26,18 @@ export default css`
 		flex-wrap: nowrap;
 	}
 
-	#todo-item:focus-within {
+	.todo-item:focus-within {
 		background-color: ${gray50};
 	}
 
-	todo-underline {
-		position: absolute;
-		bottom: 0;
-		width: 100%;
-		display: none;
-	}
-
-	#todo-item:focus-within todo-underline {
-		display: block;
-	}
-
-	.icon-wrapper {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	#checkbox {
-		padding-left: 0.8rem;
-	}
-
-	#checkbox-label {
+	.todo-input {
 		position: relative;
 		display: inline-block;
 		vertical-align: middle;
 		line-height: normal;
 		width: 100%;
 		box-sizing: border-box;
-		padding: .2rem 1.6rem .2rem 1.6rem;
+		padding: .2rem .2rem .2rem 1.6rem;
 	}
 
 	:host([checked]) input {
@@ -67,7 +46,7 @@ export default css`
 
 	input {
 		font-size: 0.8rem;
-		padding: 1.2rem 0.2rem;
+		padding: 0.8rem 0.2rem;
 		width: 100%;
 		background-color: inherit;
 		box-sizing: border-box;
@@ -82,19 +61,38 @@ export default css`
 		cursor: text;
 	}
 
-	#edit-icon {
-		position: absolute;
-		display: none;
-		cursor: pointer;
-		right: 1.6rem;
-		z-index: 0;
-		justify-content: center;
+	.icon-wrapper {
+		display: flex;
 		align-items: center;
-		height: 100%;
+		justify-content: center;
 	}
 
-	#todo-item:hover #edit-icon,
-	#todo-item:focus-within #edit-icon {
-		display: flex;
+	.todo-checkbox-icon {
+		padding-left: 0.8rem;
+	}
+
+	.todo-edit-icon {
+		cursor: pointer;
+		padding-right: 0.8rem;
+	}
+
+	.todo-edit-icon icon-component {
+		display: none;
+	}
+
+	.todo-item:hover .todo-edit-icon > icon-component,
+	.todo-item:focus-within .todo-edit-icon > icon-component {
+		display: block;
+	}
+
+	todo-underline {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		display: none;
+	}
+
+	.todo-item:focus-within todo-underline {
+		display: block;
 	}
 `;

@@ -16,15 +16,6 @@ class TodoItem extends LitElement {
 	@property({type: String}) id = '';
 	@property({type: String, reflect: true}) value = '';
 	@property({type: Boolean, reflect: true}) checked;
-	@property({type: Boolean}) hover = false;
-
-	onCheckBoxMouseOver(e) {
-		this.hover = true;
-	}
-
-	onCheckBoxMouseOut(e) {
-		this.hover = false;
-	}
 
 	handleEdit() {
 		this.dispatchEditEvent(this.id);
@@ -65,16 +56,28 @@ class TodoItem extends LitElement {
 
 	render() {
 		return html`
-			<div id="todo-item">
-				<div id="checkbox" class="icon-wrapper" @click="${this.handleChecked}" @keydown="${this.handleCheckedKeyDown}" @mouseover="${this.onCheckBoxMouseOver}" @mouseleave="${this.onCheckBoxMouseOut}" aria-label="checkbox">
+			<div class="todo-item">
+				<div
+					@click="${this.handleChecked}"
+					@keydown="${this.handleCheckedKeyDown}"
+					aria-label="todo item checkbox"
+					class="todo-checkbox-icon icon-wrapper"
+				>
 					<icon-component name="${this.checked ? 'done' : 'circle'}"></icon-component>
 				</div>
-				<div id="checkbox-label">
+
+				<div class="todo-input">
 					<input value="${this.value}"/>
 				</div>
-				<div id="edit-icon" class="icon-wrapper" @click="${this.handleEdit}" aria-label="edit item">
+
+				<div
+					@click="${this.handleEdit}"
+					aria-label="edit todo item"
+					class="todo-edit-icon icon-wrapper"
+				>
 					<icon-component name="create"></icon-component>
 				</div>
+
 				<todo-underline></todo-underline>
 			</div>
 		`;
