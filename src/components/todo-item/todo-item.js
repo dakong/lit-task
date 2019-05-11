@@ -1,9 +1,9 @@
 import {html, LitElement, property} from 'lit-element';
-import {ENTER_KEY_CODE} from '../constants/keyCodes';
-import createIcon from '../svg/create';
-import circleIcon from '../svg/circle';
-import doneIcon from '../svg/done';
-import '../icon';
+import {ENTER_KEY_CODE} from '../../constants/keyCodes';
+import createIcon from '../../svg/create';
+import circleIcon from '../../svg/circle';
+import doneIcon from '../../svg/done';
+import '../../icon';
 
 import {TODO_ITEM_CHECK, TODO_ITEM_EDIT} from './events';
 import style from './style';
@@ -18,7 +18,7 @@ class TodoItem extends LitElement {
 	@property({type: Boolean, reflect: true}) checked;
 
 	handleEdit() {
-		this.dispatchEditEvent(this.id);
+		// this.dispatchEditEvent(this.id);
 	}
 
 	handleChecked() {
@@ -29,6 +29,13 @@ class TodoItem extends LitElement {
 	handleCheckedKeyDown(e) {
 		if (e.code === ENTER_KEY_CODE)
 			this.handleChecked();
+	}
+
+	onInputChange(e) {
+		const {value} = e.target;
+
+		this.value = value;
+		this.dispatchEditEvent(this.id, value);
 	}
 
 	dispatchCheckedEvent(id, checked) {
@@ -43,10 +50,11 @@ class TodoItem extends LitElement {
 		  }));
 	}
 
-	dispatchEditEvent(id) {
+	dispatchEditEvent(id, value) {
 		this.dispatchEvent(new CustomEvent(TODO_ITEM_EDIT, {
 			detail: {
 			  id,
+				value,
 			},
             bubbles: true,
             cancelable: true,
@@ -67,7 +75,7 @@ class TodoItem extends LitElement {
 				</div>
 
 				<div class="todo-input">
-					<input value="${this.value}"/>
+					<input @keyup="${this.onInputChange}" value="${this.value}"/>
 				</div>
 
 				<div

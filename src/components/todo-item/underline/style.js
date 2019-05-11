@@ -1,5 +1,5 @@
 import {css} from 'lit-element';
-import {blueA200} from '../../styles/colors';
+import {blueA200} from '../../../styles/colors';
 export default css`
   .container {
     display: flex;

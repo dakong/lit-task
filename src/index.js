@@ -1,1 +1,1 @@
-import './todo-list';
+import './components/todo-app';

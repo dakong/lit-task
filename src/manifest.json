@@ -1,0 +1,14 @@
+{
+  "name": "Lit Tasks",
+  "version": "1.0",
+  "description": "Simple chrome extension for tasks",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "permissions": ["declarativeContent"],
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "manifest_version": 2
+}

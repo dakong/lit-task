@@ -1,7 +1,7 @@
 import {css} from 'lit-element';
 import {
 	gray50, gray100, gray300, blueGray100, blueA200
-} from '../styles/colors';
+} from '../../styles/colors';
 
 export default css`
 	:host {
