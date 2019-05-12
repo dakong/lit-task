@@ -3,65 +3,94 @@ import { todoItems } from '../data';
 
 class TodoDB {
   database;
-  dbName = 'LIT_TASKS';
-  version = 2;
-  storeName = 'todo';
 
-  constructor() {}
+  constructor(dbName, storeName, version) {
+    this.dbName = dbName;
+    this.storeName = storeName;
+    this.version = version;
+  }
 
   async initializeDB() {
     const self = this;
     this.database = await openDB(this.dbName, this.version, {
       async upgrade(db, oldversion, newversion, transaction) {
-        const store = await db.createObjectStore(self.storeName, {
-            keyPath: 'uuid',
-        });
+        try {
+          const store = await db.createObjectStore(self.storeName, {
+              keyPath: 'uuid',
+          });
 
-        store.createIndex('done', 'done', { unique: false });
-        store.createIndex('value', 'value', { unique: false });
-        store.createIndex('comment', 'comment', { unique: false });
-        store.createIndex('datetime', 'datetime', { unique: false });
+          store.createIndex('done', 'done', { unique: false });
+          store.createIndex('value', 'value', { unique: false });
+          store.createIndex('comment', 'comment', { unique: false });
+          store.createIndex('datetime', 'datetime', { unique: false });
 
-        await transaction.done;
+          await transaction.done;
+        } catch(e) {
+          throw new Error(`Unable to upgrade the ${self.dbName} database to version ${self.version}`);
+        }
 
         self.populateDemoData(db)
-          .then(() => console.log('success'))
+          .then(() => console.log('*** Successfully generated demo data'))
           .catch((e) => console.log(e));
       }
     });
   }
 
   async populateDemoData(database) {
-    const tx = database.transaction(this.storeName, 'readwrite');
-    todoItems.forEach(todo => {
-      tx.store.add(todo);
-    });
-    await tx.done;
+    try {
+      const tx = database.transaction(this.storeName, 'readwrite');
+      todoItems.forEach(todo => {
+        tx.store.add(todo);
+      });
+      await tx.done;
+    } catch(e) {
+      throw new Error(`Unable to populate the demo data`);
+    }
   }
 
   async getAll() {
-    return await this.database.getAll(this.storeName);
+    try {
+      return await this.database.getAll(this.storeName);
+    } catch(e) {
+      throw new Error('Unable to get all task items');
+    }
   }
 
   async get(uuid) {
-    return await this.database.get(this.storeName, uuid);
+    try {
+      return await this.database.get(this.storeName, uuid);
+    } catch(e) {
+      throw new Error(`Unable to get the task with uuid: ${uuid}`);
+    }
   }
 
   async update(payload) {
-    const {uuid, column, value} = payload
-    const oldVal = await this.get(uuid);
+    try {
+      const {uuid, column, value} = payload
+      const oldVal = await this.get(uuid);
 
-    const newVal = {
-      ...oldVal,
-      [column]: value
-    };
+      const newVal = {
+        ...oldVal,
+        [column]: value
+      };
 
-    await this.database.put(this.storeName, newVal);
+      return await this.database.put(this.storeName, newVal);
+    } catch(e) {
+      throw new Error(`Unable to update the task`);
+    }
   }
 
   async delete(uuid) {
-    return await this.database.delete(this.storeName, uuid);
+    try {
+      return await this.database.delete(this.storeName, uuid);
+    } catch(e) {
+      throw new Error(`Unable to delete the task with uuid: ${uuid}`);
+    }
   }
 }
 
-export default new TodoDB();
+const DB_NAME = 'LIT_TASKS';
+const VERSION = 1;
+const STORE_NAME = 'todo';
+
+export default new TodoDB(DB_NAME, STORE_NAME, VERSION);

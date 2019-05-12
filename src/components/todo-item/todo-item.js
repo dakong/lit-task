@@ -18,7 +18,6 @@ class TodoItem extends LitElement {
 	@property({type: Boolean, reflect: true}) checked;
 
 	handleEdit() {
-		// this.dispatchEditEvent(this.id);
 	}
 
 	handleChecked() {
@@ -63,6 +62,9 @@ class TodoItem extends LitElement {
 	}
 
 	render() {
+		const iconName = this.checked ? 'done' : 'circle';
+		const isDisabled = !!this.checked;
+
 		return html`
 			<div class="todo-item">
 				<div
@@ -71,11 +73,11 @@ class TodoItem extends LitElement {
 					aria-label="todo item checkbox"
 					class="todo-checkbox-icon icon-wrapper"
 				>
-					<icon-component name="${this.checked ? 'done' : 'circle'}"></icon-component>
+					<icon-component name="${iconName}"></icon-component>
 				</div>
 
 				<div class="todo-input">
-					<input @keyup="${this.onInputChange}" value="${this.value}"/>
+					<input @keyup="${this.onInputChange}" value="${this.value}" ?disabled="${isDisabled}"/>
 				</div>
 
 				<div
