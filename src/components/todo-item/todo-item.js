@@ -5,7 +5,7 @@ import circleIcon from '../../svg/circle';
 import doneIcon from '../../svg/done';
 import '../../icon';
 
-import {TODO_ITEM_CHECK, TODO_ITEM_EDIT} from './events';
+import {TOGGLE_CHECK_TODO, EDIT_TODO} from '../../actions/todo';
 import style from './style';
 
 import './underline';
@@ -16,9 +16,6 @@ class TodoItem extends LitElement {
 	@property({type: String}) id = '';
 	@property({type: String, reflect: true}) value = '';
 	@property({type: Boolean, reflect: true}) checked;
-
-	handleEdit() {
-	}
 
 	handleChecked() {
 		this.checked = !this.checked;
@@ -38,7 +35,7 @@ class TodoItem extends LitElement {
 	}
 
 	dispatchCheckedEvent(id, checked) {
-		this.dispatchEvent(new CustomEvent(TODO_ITEM_CHECK, {
+		this.dispatchEvent(new CustomEvent(TOGGLE_CHECK_TODO, {
 			detail: {
 			  id,
 			  checked,
@@ -50,7 +47,7 @@ class TodoItem extends LitElement {
 	}
 
 	dispatchEditEvent(id, value) {
-		this.dispatchEvent(new CustomEvent(TODO_ITEM_EDIT, {
+		this.dispatchEvent(new CustomEvent(EDIT_TODO, {
 			detail: {
 			  id,
 				value,

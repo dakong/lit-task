@@ -7,7 +7,7 @@
     "webpack:build": "webpack --config webpack.config.js",
     "webpack:start": "webpack-dev-server --config webpack.config.js --open"
   },
-  "author": "The Polymer Authors",
+  "author": "Daniel Kong",
   "license": "BSD-3-Clause",
   "devDependencies": {
     "@babel/core": "^7.3.3",
@@ -24,8 +24,9 @@
   "dependencies": {
     "idb": "4.0.3",
     "lit-element": "^2.0.0-rc.2",
+    "pwa-helpers": "0.9.1",
     "redux": "^4.0.1",
-    "rollup-plugin-commonjs": "^9.2.0",
+    "redux-thunk": "^2.3.0",
     "uuid": "^3.3.2"
   }
 }

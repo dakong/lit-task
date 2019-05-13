@@ -2,7 +2,7 @@ import { openDB } from 'idb';
 import { todoItems } from '../data';
 
 class TodoDB {
-  database;
+ database;
 
   constructor(dbName, storeName, version) {
     this.dbName = dbName;
@@ -12,6 +12,7 @@ class TodoDB {
 
   async initializeDB() {
     const self = this;
+
     this.database = await openDB(this.dbName, this.version, {
       async upgrade(db, oldversion, newversion, transaction) {
         try {
@@ -56,6 +57,23 @@ class TodoDB {
     }
   }
 
+  async add(uuid) {
+    try {
+      const newTodo = {
+        uuid,
+        datetime: new Date().toUTCString(),
+        value: '',
+        done: false,
+        comment: '',
+      };
+      await this.database.add(this.storeName, newTodo);
+      return newTodo;
+
+    } catch(e) {
+      throw new Error(`Unable to create a new task: ${e}`);
+    }
+  }
+
   async get(uuid) {
     try {
       return await this.database.get(this.storeName, uuid);
@@ -74,8 +92,13 @@ class TodoDB {
         [column]: value
       };
 
-      return await this.database.put(this.storeName, newVal);
+      return {
+        column,
+        value,
+        uuid: await this.database.put(this.storeName, newVal),
+      }
     } catch(e) {
+      console.log(e);
       throw new Error(`Unable to update the task`);
     }
   }
