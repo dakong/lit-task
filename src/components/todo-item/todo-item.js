@@ -1,11 +1,8 @@
 import {html, LitElement, property} from 'lit-element';
 import {ENTER_KEY_CODE} from '../../constants/keyCodes';
-import createIcon from '../../svg/create';
-import circleIcon from '../../svg/circle';
-import doneIcon from '../../svg/done';
 import '../../icon';
 
-import {TOGGLE_CHECK_TODO, EDIT_TODO} from '../../actions/todo';
+import {TOGGLE_CHECK_TODO, EDIT_TODO, DELETE_TODO} from '../../actions/todo';
 import style from './style';
 
 import './underline';
@@ -22,6 +19,10 @@ class TodoItem extends LitElement {
 		this.dispatchCheckedEvent(this.id, this.checked);
 	}
 
+	handleDelete() {
+		this.dispatchDeleteEvent(this.id);
+	}
+
 	handleCheckedKeyDown(e) {
 		if (e.code === ENTER_KEY_CODE)
 			this.handleChecked();
@@ -34,16 +35,27 @@ class TodoItem extends LitElement {
 		this.dispatchEditEvent(this.id, value);
 	}
 
+	dispatchDeleteEvent(id) {
+		this.dispatchEvent(new CustomEvent(DELETE_TODO, {
+			detail: {
+				id,
+			},
+      bubbles: true,
+    	cancelable: true,
+      composed: true,
+		}));
+	}
+
 	dispatchCheckedEvent(id, checked) {
 		this.dispatchEvent(new CustomEvent(TOGGLE_CHECK_TODO, {
 			detail: {
 			  id,
 			  checked,
 			},
-            bubbles: true,
-            cancelable: true,
-            composed: true,
-		  }));
+      bubbles: true,
+    	cancelable: true,
+      composed: true,
+		}));
 	}
 
 	dispatchEditEvent(id, value) {
@@ -61,6 +73,25 @@ class TodoItem extends LitElement {
 	render() {
 		const iconName = this.checked ? 'done' : 'circle';
 		const isDisabled = !!this.checked;
+		const editIcon = html`
+				<div
+					@click="${this.handleEdit}"
+					aria-label="edit todo item"
+					class="todo-edit-icon icon-wrapper"
+				>
+					<icon-component name="edit"></icon-component>
+				</div>
+		`;
+		const deleteIcon = html`
+			<div
+					@click="${this.handleDelete}"
+					aria-label="delete todo item"
+					class="todo-edit-icon icon-wrapper"
+				>
+					<icon-component name="trash"></icon-component>
+				</div>
+		`;
+		const actionIcon = this.checked ? deleteIcon : editIcon;
 
 		return html`
 			<div class="todo-item">
@@ -76,15 +107,7 @@ class TodoItem extends LitElement {
 				<div class="todo-input">
 					<input @keyup="${this.onInputChange}" value="${this.value}" ?disabled="${isDisabled}"/>
 				</div>
-
-				<div
-					@click="${this.handleEdit}"
-					aria-label="edit todo item"
-					class="todo-edit-icon icon-wrapper"
-				>
-					<icon-component name="create"></icon-component>
-				</div>
-
+					${actionIcon}
 				<todo-underline></todo-underline>
 			</div>
 		`;

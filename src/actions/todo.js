@@ -46,9 +46,16 @@ export const initializeItems = () => {
 export const updateTodo = (todo) => {
   return {
     type: EDIT_TODO,
-    todo
+    todo,
   };
 };
+
+export const deleteTodo = (uuid) => {
+  return {
+    type: DELETE_TODO,
+    uuid,
+  }
+}
 
 
 const todos = (state = INITIAL_STATE, action) => {
@@ -72,6 +79,13 @@ const todos = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         todos: updatedTodo,
+      };
+    case DELETE_TODO:
+      console.log(todos);
+      console.log(action.uuid);
+      return {
+        ...state,
+        todos: todos.filter(todo => todo.uuid !== action.uuid),
       }
     default:
       return state;

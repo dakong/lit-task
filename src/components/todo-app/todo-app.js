@@ -15,6 +15,8 @@ import {
 	ADD_TODO,
 	TOGGLE_CHECK_TODO,
 	EDIT_TODO,
+	DELETE_TODO,
+	deleteTodo,
 	updateTodo,
 	initializeItems,
 	addTodo,
@@ -50,12 +52,23 @@ class TodoApp extends connect(store)(LitElement) {
 
 			TodoDB.update(payload);
 		});
+
+		this.addEventListener(DELETE_TODO, (e) => {
+			const { id } = e.detail;
+			TodoDB.delete(id)
+				.then((data) => store.dispatch(deleteTodo(id)))
+				.catch((e) => console.log('error while deleting too: ', e));
+		});
 	}
 
 	addNewTodo() {
 		const uuid = uuidv4();
+
 		TodoDB.add(uuid)
-			.then((todo) => store.dispatch(addTodo(todo)))
+			.then((todo) => {
+				console.log(todo);
+				store.dispatch(addTodo(todo))
+			})
 			.catch((e) => console.log('error while checking: ', e));
 	}
 
@@ -65,7 +78,7 @@ class TodoApp extends connect(store)(LitElement) {
 				<todo-add @click="${this.addNewTodo}" slot="header"></todo-add>
 				${this.todoList.map((item) =>
 					html`
-						<todo-item slot="item" .id="${item.uuid}" ?checked="${item.done}" .value="${item.value}">
+						<todo-item slot="item" .id="${item.uuid}" ?checked="${item.done}" .value="${item.uuid}">
 						</todo-item>
 					`
 				)}

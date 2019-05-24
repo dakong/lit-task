@@ -1,7 +1,9 @@
 import {html, LitElement, property} from 'lit-element';
-import createIcon from '../svg/create';
+import editIcon from '../svg/edit';
 import circleIcon from '../svg/circle';
 import doneIcon from '../svg/done';
+import addIcon from '../svg/add';
+import trashIcon from '../svg/trash';
 
 import style from './style';
 
@@ -22,10 +24,14 @@ class Icon extends LitElement {
 		switch(this.name) {
 			case 'circle':
 				return html`${circleIcon}`;
-			case 'create':
-				return html`${createIcon}`;
+			case 'edit':
+				return html`${editIcon}`;
 			case 'done':
 				return html`${doneIcon}`;
+			case 'add':
+				return html`${addIcon}`;
+			case 'trash':
+				return html`${trashIcon}`;
 		}
 	}
 
