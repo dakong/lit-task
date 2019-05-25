@@ -8,7 +8,7 @@ import {
 import thunk from 'redux-thunk';
 import { lazyReducerEnhancer } from 'pwa-helpers/lazy-reducer-enhancer.js';
 
-import todoReducers from './_components/todos/reducers';
+import { reducers as todoReducers } from './_components/todos';
 
 const devCompose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

@@ -3,7 +3,9 @@ import { connect } from 'pwa-helpers/connect-mixin.js';
 
 import { store } from '../../store';
 
-import '../todos';
+import '../todos/components/add-button';
+import '../todos/components/list';
+import '../todos/components/item';
 
 import { initializeItems } from './actionCreators';
 
@@ -38,7 +40,7 @@ class TodoApp extends connect(store)(LitElement) {
 	}
 
 	stateChanged(state) {
-		this.todoList = state.todos.todos;
+		this.todoList = state.todos;
 	}
 }
 
