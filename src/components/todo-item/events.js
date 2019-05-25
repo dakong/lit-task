@@ -1,2 +1,0 @@
-export const TODO_ITEM_CHECK = 'TODO_ITEM/CHECK';
-export const TODO_ITEM_EDIT = 'TODO_ITEM/EDIT';

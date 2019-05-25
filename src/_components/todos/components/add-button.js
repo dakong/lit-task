@@ -1,8 +1,14 @@
 import { html, LitElement, property, css } from 'lit-element';
+import { connect } from 'pwa-helpers/connect-mixin.js';
+import uuidv4 from 'uuid/v4';
 
+import { store } from '../../../store';
+import TodoDB from '../../../indexedDB/todoDB';
+
+import { addTodo } from '../actionCreators';
 import '../../icon';
 
-class TodoAdd extends LitElement {
+class TodoAdd extends connect(store)(LitElement) {
   static styles = css`
     :host {
       display: block;
@@ -26,10 +32,18 @@ class TodoAdd extends LitElement {
     }
   `;
 
+  addNewTodo() {
+		const uuid = uuidv4();
+
+		TodoDB.add(uuid)
+			.then(todo => store.dispatch(addTodo(todo)))
+			.catch(e => console.log('error while checking: ', e));
+	}
+
   render() {
     return html`
       <div class="add-button">
-        <icon-component name="add"></icon-component>
+        <icon-component @click="${this.addNewTodo}" name="add"></icon-component>
         <p>Add a task</p>
       </div>
     `

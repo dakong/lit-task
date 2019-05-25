@@ -1,14 +1,36 @@
-import {html, LitElement, property} from 'lit-element';
-import editIcon from '../svg/edit';
-import circleIcon from '../svg/circle';
-import doneIcon from '../svg/done';
-import addIcon from '../svg/add';
-import trashIcon from '../svg/trash';
+import { html, LitElement, property, css } from 'lit-element';
+import { gray200 } from '../../styles/colors';
 
-import style from './style';
+import editIcon from '../../svg/edit';
+import circleIcon from '../../svg/circle';
+import doneIcon from '../../svg/done';
+import addIcon from '../../svg/add';
+import trashIcon from '../../svg/trash';
 
 class Icon extends LitElement {
-	static styles = style;
+	static styles = css`
+		#icon {
+			height: 2.4rem;
+			width: 2.4rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			z-index: 1000;
+			border-radius: 50%;
+			background-color: transparent;
+			transition: background-color 0.15s;
+		}
+
+		#icon:hover {
+			background-color: ${gray200};
+		}
+
+		#icon:focus {
+			outline: 0;
+			background-color: ${gray200};
+		}
+`;
 
 	@property({type: String}) id = '';
 	@property({type: String, reflect: true}) value = '';
