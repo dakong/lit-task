@@ -11,6 +11,8 @@ import {
 } from '../../../styles/colors';
 
 import TodoDB from '../../../indexedDB/todoDB';
+import { COLUMN_DONE, COLUMN_VALUE } from '../../../indexedDB/constants';
+
 import { store } from '../../../store';
 
 class TodoItem extends LitElement {
@@ -120,7 +122,7 @@ class TodoItem extends LitElement {
 
 		const payload = {
 			uuid: this.id,
-			column: 'done',
+			column: COLUMN_DONE,
 			value: this.checked,
 		}
 
@@ -153,7 +155,7 @@ class TodoItem extends LitElement {
 		const payload = {
 			uuid,
 			value,
-			column: 'done',
+			column: COLUMN_DONE,
 		};
 
 		TodoDB.update(payload).then((data) => store.dispatch(updateTodo(data)))
@@ -164,7 +166,7 @@ class TodoItem extends LitElement {
 		const payload = {
 			uuid,
 			value,
-			column: 'value',
+			column: COLUMN_VALUE,
 		};
 
 		TodoDB.update(payload).then((data) => store.dispatch(updateTodo(data)))

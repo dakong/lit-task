@@ -1,5 +1,6 @@
 import { openDB } from 'idb';
 import { todoItems } from '../data';
+import * as CONSTANTS from './constants';
 
 class TodoDB {
  database;
@@ -17,13 +18,13 @@ class TodoDB {
       async upgrade(db, oldversion, newversion, transaction) {
         try {
           const store = await db.createObjectStore(self.storeName, {
-              keyPath: 'uuid',
+              keyPath: CONSTANTS.COLUMN_UUID,
           });
 
-          store.createIndex('done', 'done', { unique: false });
-          store.createIndex('value', 'value', { unique: false });
-          store.createIndex('comment', 'comment', { unique: false });
-          store.createIndex('datetime', 'datetime', { unique: false });
+          store.createIndex(CONSTANTS.COLUMN_DONE, CONSTANTS.COLUMN_DONE, { unique: false });
+          store.createIndex(CONSTANTS.COLUMN_VALUE, CONSTANTS.COLUMN_VALUE, { unique: false });
+          store.createIndex(CONSTANTS.COLUMN_COMMENT, CONSTANTS.COLUMN_COMMENT, { unique: false });
+          store.createIndex(CONSTANTS.COLUMN_DATETIME, CONSTANTS.COLUMN_DATETIME, { unique: false });
 
           await transaction.done;
         } catch(e) {
