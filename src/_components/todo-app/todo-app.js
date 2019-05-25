@@ -31,7 +31,7 @@ class TodoApp extends connect(store)(LitElement) {
 				<todo-add slot="header"></todo-add>
 				${this.todoList.map((item) =>
 					html`
-						<todo-item slot="item" .id="${item.uuid}" ?checked="${item.done}" .value="${item.uuid}">
+						<todo-item slot="item" .id="${item.uuid}" ?checked="${item.done}" .value="${item.value}">
 						</todo-item>
 					`
 				)}

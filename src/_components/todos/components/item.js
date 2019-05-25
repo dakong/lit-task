@@ -1,8 +1,10 @@
 import { html, css, LitElement, property } from 'lit-element';
+import uuidv4 from 'uuid/v4';
+
 import { ENTER_KEY_CODE } from '../../../constants/keyCodes';
 import '../../icon';
 
-import { deleteTodo, updateTodo } from '../actionCreators';
+import { deleteTodo, updateTodo, addTodo } from '../actionCreators';
 
 import '../../ui/underline';
 
@@ -131,9 +133,13 @@ class TodoItem extends LitElement {
 
 	// Handle when a todo item text is updated.
 	onInputChange(e) {
-		const {value} = e.target;
+		const { value } = e.target;
 		this.value = value;
-		this.updateTodoItemValue(this.id, this.value);
+		if (e.code === ENTER_KEY_CODE) {
+			this.addNewTodo();
+		} else {
+			this.updateTodoItemValue(this.id, this.value);
+		}
 	}
 
 	// Handle when a todo item is deleted.
@@ -143,6 +149,14 @@ class TodoItem extends LitElement {
 
 	onFullEdit() {
 
+	}
+
+	addNewTodo() {
+		const uuid = uuidv4();
+
+		TodoDB.add(uuid)
+			.then(todo => store.dispatch(addTodo(todo)))
+			.catch(e => console.log('error while checking: ', e));
 	}
 
 	// Add ability to check a todo item using the enter key.
