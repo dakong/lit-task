@@ -6,6 +6,7 @@ import circleIcon from '../../svg/circle';
 import doneIcon from '../../svg/done';
 import addIcon from '../../svg/add';
 import trashIcon from '../../svg/trash';
+import leftArrowIcon from '../../svg/left-arrow';
 
 class Icon extends LitElement {
 	static styles = css`
@@ -54,6 +55,8 @@ class Icon extends LitElement {
 				return html`${addIcon}`;
 			case 'trash':
 				return html`${trashIcon}`;
+			case 'left-arrow':
+				return html`${leftArrowIcon}`;
 		}
 	}
 

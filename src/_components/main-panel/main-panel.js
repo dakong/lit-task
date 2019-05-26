@@ -9,12 +9,13 @@ import '../todos/components/item';
 
 import { initializeItems } from './actionCreators';
 
-class TodoApp extends connect(store)(LitElement) {
+class MainPanel extends connect(store)(LitElement) {
   static styles = css`
 		:host {
 			width: 375px;
-			height: 475px;
+			height: auto;
 			display: block;
+			margin: 32px auto;
 		}
 	`;
 
@@ -44,4 +45,10 @@ class TodoApp extends connect(store)(LitElement) {
 	}
 }
 
-customElements.define('todo-app', TodoApp);
+const template = () => html`
+	<div>
+	</div>
+`;
+
+
+customElements.define('main-panel', MainPanel);

@@ -7,6 +7,7 @@ import TodoDB from '../../../indexedDB/todoDB';
 
 import { addTodo } from '../actionCreators';
 import '../../icon';
+import { gray200 } from '../../../styles/colors';
 
 class TodoAdd extends connect(store)(LitElement) {
   static styles = css`
@@ -18,6 +19,12 @@ class TodoAdd extends connect(store)(LitElement) {
     .add-button {
       display: flex;
       flex-direction: row;
+      transition: background-color 0.15s;
+      border-radius: 40px
+    }
+
+    .add-button:hover {
+      background-color: ${gray200};
     }
 
     icon-component {
@@ -42,8 +49,8 @@ class TodoAdd extends connect(store)(LitElement) {
 
   render() {
     return html`
-      <div class="add-button">
-        <icon-component @click="${this.addNewTodo}" name="add"></icon-component>
+      <div class="add-button" @click="${this.addNewTodo}">
+        <icon-component name="add"></icon-component>
         <p>Add a task</p>
       </div>
     `
