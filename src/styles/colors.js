@@ -1,4 +1,4 @@
-import {unsafeCSS} from 'lit-element';
+import { unsafeCSS } from 'lit-element';
 
 export const gray50 = unsafeCSS`#FAFAFA`;
 export const gray100 = unsafeCSS`#F5F5F5`;

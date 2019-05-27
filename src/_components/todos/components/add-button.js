@@ -1,12 +1,12 @@
-import { html, LitElement, property, css } from 'lit-element';
+import { html, LitElement, css } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 import uuidv4 from 'uuid/v4';
 
 import { store } from '../../../store';
-import TodoDB from '../../../indexedDB/todoDB';
+import TodoDB from '../../../indexed-db/todo-db';
 
-import { addTodo } from '../actionCreators';
-import '../../icon';
+import { addTodo } from '../action-creators';
+import '../../ui/icon';
 import { gray200 } from '../../../styles/colors';
 
 class TodoAdd extends connect(store)(LitElement) {
@@ -40,12 +40,12 @@ class TodoAdd extends connect(store)(LitElement) {
   `;
 
   addNewTodo() {
-		const uuid = uuidv4();
+    const uuid = uuidv4();
 
-		TodoDB.add(uuid)
-			.then(todo => store.dispatch(addTodo(todo)))
-			.catch(e => console.log('error while checking: ', e));
-	}
+    TodoDB.add(uuid)
+      .then(todo => store.dispatch(addTodo(todo)))
+      .catch(e => console.log('error while checking: ', e));
+  }
 
   render() {
     return html`
@@ -53,7 +53,7 @@ class TodoAdd extends connect(store)(LitElement) {
         <icon-component name="add"></icon-component>
         <p>Add a task</p>
       </div>
-    `
+    `;
   }
 }
 

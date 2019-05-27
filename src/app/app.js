@@ -17,7 +17,7 @@ class MainApp extends connect(store)(LitElement) {
     }
   `;
 
-  @property({type: String}) _panel = 'main_panel';
+  @property({ type: String }) _panel = 'main_panel';
 
   render() {
     return html`

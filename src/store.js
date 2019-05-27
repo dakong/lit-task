@@ -18,11 +18,11 @@ export const store = createStore(
 
   devCompose(
     lazyReducerEnhancer(combineReducers),
-    applyMiddleware(thunk)
-  )
+    applyMiddleware(thunk),
+  ),
 );
 
 store.addReducers({
   todos: todoReducers,
   app: appReducers,
-})
+});

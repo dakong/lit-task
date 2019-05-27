@@ -1,4 +1,4 @@
-import { ADD_TODO, EDIT_TODO, DELETE_TODO, FETCH_TODO_ITEMS } from './actionTypes';
+import { ADD_TODO, EDIT_TODO, DELETE_TODO, FETCH_TODO_ITEMS } from './action-types';
 
 export const addTodo = (todo) => {
   return {
@@ -18,8 +18,8 @@ export const deleteTodo = (uuid) => {
   return {
     uuid,
     type: DELETE_TODO,
-  }
-}
+  };
+};
 
 export const fetchTodoItems = (todos) => {
   return {

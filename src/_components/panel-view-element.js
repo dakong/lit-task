@@ -6,5 +6,5 @@ export class PanelViewElement extends LitElement {
     return this.active;
   }
 
-  @property({type: Boolean}) active = false;
+  @property({ type: Boolean }) active = false;
 }

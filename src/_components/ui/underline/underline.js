@@ -1,5 +1,5 @@
-import {html, LitElement, css} from 'lit-element';
-import {blueA200} from '../../../styles/colors';
+import { html, LitElement, css } from 'lit-element';
+import { blueA200 } from '../../../styles/colors';
 
 class TodoUnderline extends LitElement {
   static get styles() {

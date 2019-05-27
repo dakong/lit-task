@@ -1,23 +1,21 @@
-import { html, css, property } from 'lit-element';
+import { html, css } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
-
-import uuidv4 from 'uuid/v4';
 import { PanelViewElement } from '../panel-view-element';
 
-import TodoDB from '../../indexedDB/todoDB';
+import TodoDB from '../../indexed-db/todo-db';
 
 import { gray50 } from '../../styles/colors';
-import '../icon';
+import '../ui/icon';
 
 import { store } from '../../store';
-import { openMainPanel } from '../../app/actionCreators';
+import { openMainPanel } from '../../app/action-creators';
 
-import { deleteTodo } from '../todos/actionCreators';
+import { deleteTodo } from '../todos/action-creators';
 import '../ui/underline';
 
 class EditPanel extends connect(store)(PanelViewElement) {
-	static get styles() {
-		return css`
+  static get styles() {
+    return css`
       :host {
         width: 375px;
         height: auto;
@@ -35,10 +33,10 @@ class EditPanel extends connect(store)(PanelViewElement) {
         box-sizing: border-box;
         border-radius: 3px;
         font-size: 0.8rem;
-				padding: 0.8rem 0.8rem;
+        padding: 0.8rem 0.8rem;
         text-decoration: none;
         border-width: 0;
-				background-color: ${gray50};
+        background-color: ${gray50};
         margin: 0.8rem auto;
         resize: none;
         outline: none;
@@ -66,23 +64,22 @@ class EditPanel extends connect(store)(PanelViewElement) {
       }
 
       todo-underline {
-				position: absolute;
-				bottom: 0;
-				width: 100%;
-				display: none;
-			}
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        display: none;
+      }
 
-			textarea[name=title]:focus-within + todo-underline,
-      textarea[name=details]:focus-within + todo-underline
-      {
-				display: block;
-			}
+      textarea[name=title]:focus-within + todo-underline,
+      textarea[name=details]:focus-within + todo-underline {
+        display: block;
+      }
 
       .textarea-wrapper {
         position: relative;
       }
     `;
-	};
+  };
 
   onBackButton() {
     store.dispatch(openMainPanel());
@@ -90,20 +87,20 @@ class EditPanel extends connect(store)(PanelViewElement) {
 
   deleteTodoItem(id) {
     TodoDB.delete(id)
-			.then((data) => {
+      .then((data) => {
         store.dispatch(deleteTodo(id));
         store.dispatch(openMainPanel());
       })
-			.catch((e) => console.log('error while deleting too: ', e));
+      .catch((e) => console.log('error while deleting too: ', e));
   }
 
   onDelete() {
     this.deleteTodoItem(this._uuid);
   }
 
-	render() {
-		return html`
-			<div class="edit-panel">
+  render() {
+    return html`
+      <div class="edit-panel">
         <div class="edit-header">
           <icon-component @click="${this.onBackButton}" name="left-arrow"></icon-component>
           <icon-component @click="${this.onDelete}" name="trash"></icon-component>
@@ -118,9 +115,9 @@ class EditPanel extends connect(store)(PanelViewElement) {
           <textarea name="details" placeholder="Add details">${this._comment}</textarea>
           <todo-underline></todo-underline>
         </div>
-			</div>
-		`;
-	}
+      </div>
+    `;
+  }
 
   updated() {
     if (this.active) {
@@ -131,7 +128,8 @@ class EditPanel extends connect(store)(PanelViewElement) {
 
   stateChanged(state) {
     const currentItem = state.app.currentEditable;
-    this._uuid = currentItem.uuid,
+
+    this._uuid = currentItem.uuid;
     this._title = currentItem.value;
     this._comment = currentItem.comment;
   }

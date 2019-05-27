@@ -1,5 +1,5 @@
 import { actionCreators } from '../todos';
-import TodoDB from '../../indexedDB/todoDB';
+import TodoDB from '../../indexed-db/todo-db';
 
 const { fetchTodoItems } = actionCreators;
 
@@ -10,13 +10,13 @@ async function initDB() {
   return todos;
 }
 
-export const initializeItems = () => {
+export const initializeItems = function () {
   return async (dispatch) => {
     try {
       const todos = await initDB();
       dispatch(fetchTodoItems(todos));
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
-  }
-}
+  };
+};
