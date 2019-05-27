@@ -22,8 +22,6 @@ export const store = createStore(
   )
 );
 
-console.log(todoReducers);
-console.log(appReducers);
 store.addReducers({
   todos: todoReducers,
   app: appReducers,

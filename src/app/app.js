@@ -30,7 +30,6 @@ class MainApp extends connect(store)(LitElement) {
   }
 
   stateChanged(state) {
-    console.log(state);
     this._panel = state.app.panel;
   }
 }

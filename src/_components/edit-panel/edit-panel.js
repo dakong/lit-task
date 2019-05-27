@@ -4,11 +4,16 @@ import { connect } from 'pwa-helpers/connect-mixin.js';
 import uuidv4 from 'uuid/v4';
 import { PanelViewElement } from '../panel-view-element';
 
+import TodoDB from '../../indexedDB/todoDB';
+
 import { gray50 } from '../../styles/colors';
 import '../icon';
 
 import { store } from '../../store';
 import { openMainPanel } from '../../app/actionCreators';
+
+import { deleteTodo } from '../todos/actionCreators';
+import '../ui/underline';
 
 class EditPanel extends connect(store)(PanelViewElement) {
 	static get styles() {
@@ -59,6 +64,23 @@ class EditPanel extends connect(store)(PanelViewElement) {
       .edit-header {
         height: 32px;
       }
+
+      todo-underline {
+				position: absolute;
+				bottom: 0;
+				width: 100%;
+				display: none;
+			}
+
+			textarea[name=title]:focus-within + todo-underline,
+      textarea[name=details]:focus-within + todo-underline
+      {
+				display: block;
+			}
+
+      .textarea-wrapper {
+        position: relative;
+      }
     `;
 	};
 
@@ -66,19 +88,46 @@ class EditPanel extends connect(store)(PanelViewElement) {
     store.dispatch(openMainPanel());
   }
 
+  deleteTodoItem(id) {
+    TodoDB.delete(id)
+			.then((data) => {
+        store.dispatch(deleteTodo(id));
+        store.dispatch(openMainPanel());
+      })
+			.catch((e) => console.log('error while deleting too: ', e));
+  }
+
+  onDelete() {
+    this.deleteTodoItem(this._uuid);
+  }
+
 	render() {
 		return html`
 			<div class="edit-panel">
         <div class="edit-header">
           <icon-component @click="${this.onBackButton}" name="left-arrow"></icon-component>
-          <icon-component name="trash"></icon-component>
+          <icon-component @click="${this.onDelete}" name="trash"></icon-component>
         </div>
 
-        <textarea name="title" placeholder="Enter title">${this._title}</textarea>
-        <textarea name="details" placeholder="Add details">${this._comment}</textarea>
+        <div class="textarea-wrapper">
+          <textarea name="title" placeholder="Enter title">${this._title}</textarea>
+          <todo-underline></todo-underline>
+        </div>
+
+        <div class="textarea-wrapper">
+          <textarea name="details" placeholder="Add details">${this._comment}</textarea>
+          <todo-underline></todo-underline>
+        </div>
 			</div>
 		`;
 	}
+
+  updated() {
+    if (this.active) {
+      const textAreaTitle = this.shadowRoot.querySelector('textarea[name=title]');
+      textAreaTitle.focus();
+    }
+  }
 
   stateChanged(state) {
     const currentItem = state.app.currentEditable;

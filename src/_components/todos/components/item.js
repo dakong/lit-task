@@ -150,7 +150,7 @@ class TodoItem extends LitElement {
 
 	onFullEdit() {
 		store.dispatch(openEditPanel({
-			uuid: this.uuid,
+			uuid: this.id,
 			value: this.value,
 			comment: this.comment,
 		}));
@@ -235,7 +235,7 @@ class TodoItem extends LitElement {
 				<div class="todo-input">
 					<input @keyup="${this.onInputChange}" value="${this.value}" ?disabled="${isDisabled}"/>
 				</div>
-					${actionIcon}
+				${actionIcon}
 				<todo-underline></todo-underline>
 			</div>
 		`;
