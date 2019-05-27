@@ -3,8 +3,11 @@ import { connect } from 'pwa-helpers/connect-mixin.js';
 
 import { store } from '../store';
 
-import '../_components/main-panel';
-import '../_components/edit-panel';
+import mainPanel from '../_components/main-panel';
+import editPanel from '../_components/edit-panel';
+
+mainPanel.componentLoader.mainPanel();
+editPanel.componentLoader.editPanel();
 
 class MainApp extends connect(store)(LitElement) {
   static styles = css`

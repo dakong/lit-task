@@ -2,14 +2,14 @@ import { html, property, css } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
 import { store } from '../../store';
-
 import { PanelViewElement } from '../panel-view-element';
-
-import '../todos/components/add-button';
-import '../todos/components/list';
-import '../todos/components/item';
+import todos from '../todos';
 
 import { initializeItems } from './action-creators';
+
+todos.componentLoader.addButton();
+todos.componentLoader.list();
+todos.componentLoader.item();
 
 class MainPanel extends connect(store)(PanelViewElement) {
   static styles = css`

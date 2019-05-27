@@ -1,7 +1,6 @@
-import { actionCreators } from '../todos';
+import todos from '../todos';
 import TodoDB from '../../indexed-db/todo-db';
-
-const { fetchTodoItems } = actionCreators;
+const { fetchTodoItems } = todos.actionCreators;
 
 async function initDB() {
   await TodoDB.initializeDB();
