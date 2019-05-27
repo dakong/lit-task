@@ -5,6 +5,7 @@ import { ENTER_KEY_CODE } from '../../../constants/keyCodes';
 import '../../icon';
 
 import { deleteTodo, updateTodo, addTodo } from '../actionCreators';
+import { openEditPanel } from '../../../app/actionCreators';
 
 import '../../ui/underline';
 
@@ -148,7 +149,11 @@ class TodoItem extends LitElement {
 	}
 
 	onFullEdit() {
-
+		store.dispatch(openEditPanel({
+			uuid: this.uuid,
+			value: this.value,
+			comment: this.comment,
+		}));
 	}
 
 	addNewTodo() {
@@ -198,7 +203,7 @@ class TodoItem extends LitElement {
 		const isDisabled = !!this.checked;
 		const editIcon = html`
 				<div
-					@click="${this.onEdit}"
+					@click="${this.onFullEdit}"
 					aria-label="edit todo item"
 					class="todo-edit-icon icon-wrapper"
 				>

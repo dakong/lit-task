@@ -1,7 +1,9 @@
-import { html, LitElement, property, css } from 'lit-element';
+import { html, property, css } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
 import { store } from '../../store';
+
+import { PanelViewElement } from '../panel-view-element';
 
 import '../todos/components/add-button';
 import '../todos/components/list';
@@ -9,7 +11,7 @@ import '../todos/components/item';
 
 import { initializeItems } from './actionCreators';
 
-class MainPanel extends connect(store)(LitElement) {
+class MainPanel extends connect(store)(PanelViewElement) {
   static styles = css`
 		:host {
 			width: 375px;
@@ -44,11 +46,5 @@ class MainPanel extends connect(store)(LitElement) {
 		this.todoList = state.todos;
 	}
 }
-
-const template = () => html`
-	<div>
-	</div>
-`;
-
 
 customElements.define('main-panel', MainPanel);

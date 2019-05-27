@@ -1,10 +1,8 @@
 import * as immutable from '../../_utils/immutable';
+import createReducer from '../../_utils/createReducer';
+
 import { ADD_TODO, EDIT_TODO, DELETE_TODO, FETCH_TODO_ITEMS } from './actionTypes';
 import { COLUMN_UUID } from '../../indexedDB/constants';
-
-const createReducer = (initialState, handlers) => (state = initialState, action) => (
-  handlers.hasOwnProperty(action.type) ? handlers[action.type](state, action) : state
-);
 
 const addTodo = (todosState, action) => (
   immutable.insertItemInList(
