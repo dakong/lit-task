@@ -1,12 +1,12 @@
 import { html, LitElement, property, css } from 'lit-element';
 import { gray200 } from '../../../styles/colors';
 
-import editIcon from '../../../svg/edit';
-import circleIcon from '../../../svg/circle';
-import doneIcon from '../../../svg/done';
-import addIcon from '../../../svg/add';
-import trashIcon from '../../../svg/trash';
-import leftArrowIcon from '../../../svg/left-arrow';
+import editIcon from './svg/edit';
+import circleIcon from './svg/circle';
+import doneIcon from './svg/done';
+import addIcon from './svg/add';
+import trashIcon from './svg/trash';
+import leftArrowIcon from './svg/left-arrow';
 
 class Icon extends LitElement {
   static styles = css`

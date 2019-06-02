@@ -1,53 +1,38 @@
-import { html, css } from 'lit-element';
+import { LitElement, html, css, property } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
-import { PanelViewElement } from '../panel-view-element';
 
 import TodoDB from '../../indexed-db/todo-db';
-
-import { gray50 } from '../../styles/colors';
-import '../ui/icon';
-
+import { COLUMN_VALUE, COLUMN_COMMENT } from '../../indexed-db/constants';
 import { store } from '../../store';
 import { openMainPanel } from '../../app/action-creators';
+import '../ui/form-fields/lit-textarea';
+import { PanelViewElement } from '../panel-view-element';
+import todos from '../todos';
 
-import { deleteTodo } from '../todos/action-creators';
+import '../ui/icon';
 import '../ui/underline';
+
+const { deleteTodo, updateTodo } = todos.actionCreators;
 
 class EditPanel extends connect(store)(PanelViewElement) {
   static get styles() {
     return css`
       :host {
-        width: 375px;
-        height: auto;
-        display: block;
-        margin: 32px auto;
-
-        /*specific styling */
-        padding: .2rem .2rem .2rem 1.6rem;
-
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: var(--app-drawer-width, 375px);
+        transition-property: -webkit-transform;
+        transition-property: transform;
+        -webkit-transform: translate3d(100%, 0, 0);
+        transform: translate3d(100%, 0, 0);
+        transition: 0.25s ease all;
+        background-color: white;
       }
 
-      textarea {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-        border-radius: 3px;
-        font-size: 0.8rem;
-        padding: 0.8rem 0.8rem;
-        text-decoration: none;
-        border-width: 0;
-        background-color: ${gray50};
-        margin: 0.8rem auto;
-        resize: none;
-        outline: none;
-      }
-
-      textarea[name=details] {
-        min-height: 60px;
-      }
-
-      textarea[name=title] {
-        min-height: 20px;
+      :host([active]) {
+        transform: translate3d(0, 0, 0);
       }
 
       icon-component {
@@ -59,27 +44,17 @@ class EditPanel extends connect(store)(PanelViewElement) {
         float: right;
       }
 
-      .edit-header {
-        height: 32px;
-      }
-
-      todo-underline {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        display: none;
-      }
-
-      textarea[name=title]:focus-within + todo-underline,
-      textarea[name=details]:focus-within + todo-underline {
-        display: block;
-      }
-
-      .textarea-wrapper {
+      .textarea {
         position: relative;
+        margin: 0.8rem auto;
       }
     `;
   };
+
+  @property({ type: Boolean }) active;
+  @property({ type: String }) _uuid;
+  @property({ type: String }) _title;
+  @property({ type: String }) _comment;
 
   onBackButton() {
     store.dispatch(openMainPanel());
@@ -98,6 +73,44 @@ class EditPanel extends connect(store)(PanelViewElement) {
     this.deleteTodoItem(this._uuid);
   }
 
+  updateTodoItem(uuid, value, column) {
+    const payload = {
+      uuid,
+      value,
+      column,
+    };
+
+    TodoDB.update(payload).then((data) => store.dispatch(updateTodo(data)))
+      .catch((e) => console.log('error while updating todo: ', e));
+  }
+
+  onTitleChange(e) {
+    const { value } = e.detail;
+    this._title = value;
+    console.log(value);
+    this.updateTodoItem(this._uuid, this._title, COLUMN_VALUE);
+  }
+
+  onCommentChange(e) {
+    const { value } = e.detail;
+    this._comment = value;
+    this.updateTodoItem(this._uuid, this._comment, COLUMN_COMMENT);
+  }
+
+  constructor() {
+    super();
+
+    this.addEventListener('transitionend', () => {
+      const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
+      if (!textAreaTitle || this.active === undefined) return;
+      if (this.active) {
+        textAreaTitle.focus = true;
+      } else if (!this.active) {
+        textAreaTitle.focus = false;
+      }
+    });
+  }
+
   render() {
     return html`
       <div class="edit-panel">
@@ -106,24 +119,15 @@ class EditPanel extends connect(store)(PanelViewElement) {
           <icon-component @click="${this.onDelete}" name="trash"></icon-component>
         </div>
 
-        <div class="textarea-wrapper">
-          <textarea name="title" placeholder="Enter title">${this._title}</textarea>
-          <todo-underline></todo-underline>
+        <div class="textarea">
+          <lit-textarea @textarea-change="${this.onTitleChange}" name="title" placeholder="Enter title" value="${this._title}"></lit-textarea>
         </div>
 
-        <div class="textarea-wrapper">
-          <textarea name="details" placeholder="Add details">${this._comment}</textarea>
-          <todo-underline></todo-underline>
+        <div class="textarea">
+          <lit-textarea @textarea-change="${this.onCommentChange}" name="title" placeholder="Enter details" value="${this._comment}"></lit-textarea>
         </div>
       </div>
     `;
-  }
-
-  updated() {
-    if (this.active) {
-      const textAreaTitle = this.shadowRoot.querySelector('textarea[name=title]');
-      textAreaTitle.focus();
-    }
   }
 
   stateChanged(state) {

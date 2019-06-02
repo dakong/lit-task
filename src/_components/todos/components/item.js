@@ -110,7 +110,7 @@ class TodoItem extends LitElement {
         display: none;
       }
 
-      .todo-item:focus-within todo-underline {
+      .todo-input:focus-within ~ todo-underline {
         display: block;
       }
     `;
@@ -118,6 +118,7 @@ class TodoItem extends LitElement {
 
     @property({ type: String }) id = '';
     @property({ type: String, reflect: true }) value = '';
+    @property({ type: String, reflect: false }) comment = '';
     @property({ type: Boolean, reflect: true }) checked;
 
     // Handle when todo item is checked.

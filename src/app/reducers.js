@@ -19,7 +19,7 @@ const openEditPanel = (appState, action) => {
   };
 };
 
-const openMainPanel = (appState, action) => {
+const openMainPanel = (appState) => {
   return {
     ...appState,
     panel: 'main_panel',
