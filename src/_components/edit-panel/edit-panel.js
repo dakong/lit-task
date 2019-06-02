@@ -88,7 +88,6 @@ class EditPanel extends connect(store)(PanelViewElement) {
   onTitleChange(e) {
     const { value } = e.detail;
     this._title = value;
-    console.log(value);
     this.updateTodoItem(this._uuid, this._title, COLUMN_VALUE);
   }
 

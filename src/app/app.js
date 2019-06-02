@@ -1,13 +1,15 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html } from 'lit-element';
 import '../_components/main-panel';
+import '../_components/sidebar-panel';
+import '../_components/app-layout';
 
 class MainApp extends LitElement {
-  static styles = css``;
-
   render() {
-    console.log('render');
     return html`
-      <main-panel></main-panel>
+      <app-layout>
+        <sidebar-panel slot="sidebar"></sidebar-panel>
+        <main-panel slot="content"></main-panel>
+      </app-layout>
     `;
   }
 }

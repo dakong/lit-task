@@ -10,3 +10,4 @@ export const blueGray300 = unsafeCSS`#90A4AE`;
 export const blueGray400 = unsafeCSS`#78909C`;
 export const blueA200 = unsafeCSS`#448AFF`;
 export const bg = unsafeCSS`#f8f9fa`;
+export const yellow = unsafeCSS`#feefc3`;

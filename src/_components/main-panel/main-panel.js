@@ -13,10 +13,10 @@ editPanel.componentLoader.editPanel();
 class MainPanel extends connect(store)(LitElement) {
   static styles = css`
   :host {
-      width: 375px;
+      width: 100%;
       height: auto;
       display: block;
-      margin: 32px auto;
+      margin: auto;
       overflow: hidden;
     }
 
