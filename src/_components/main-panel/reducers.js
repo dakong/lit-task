@@ -1,7 +1,7 @@
-import createReducer from '../_utils/create-reducer';
+import createReducer from '../../_utils/create-reducer';
 import { NAVIGATE_EDIT_PANEL, NAVIGATE_TODO_PANEL } from './action-types';
 const DEFAULT_APP_STATE = {
-  panel: 'main_panel',
+  panel: 'todo_panel',
   currentEditable: {},
 };
 
@@ -19,15 +19,15 @@ const openEditPanel = (appState, action) => {
   };
 };
 
-const openMainPanel = (appState) => {
+const openTodoPanel = (appState) => {
   return {
     ...appState,
-    panel: 'main_panel',
+    panel: 'todo_panel',
     currentEditable: {},
   };
 };
 
 export default createReducer(DEFAULT_APP_STATE, {
   [NAVIGATE_EDIT_PANEL]: openEditPanel,
-  [NAVIGATE_TODO_PANEL]: openMainPanel,
+  [NAVIGATE_TODO_PANEL]: openTodoPanel,
 });

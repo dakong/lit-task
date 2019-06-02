@@ -1,10 +1,10 @@
-import { LitElement, html, css, property } from 'lit-element';
+import { html, css, property } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
 import TodoDB from '../../indexed-db/todo-db';
 import { COLUMN_VALUE, COLUMN_COMMENT } from '../../indexed-db/constants';
 import { store } from '../../store';
-import { openMainPanel } from '../../app/action-creators';
+import { openTodoPanel } from '../main-panel/action-creators';
 import '../ui/form-fields/lit-textarea';
 import { PanelViewElement } from '../panel-view-element';
 import todos from '../todos';
@@ -17,7 +17,16 @@ const { deleteTodo, updateTodo } = todos.actionCreators;
 class EditPanel extends connect(store)(PanelViewElement) {
   static get styles() {
     return css`
-      :host {
+      icon-component {
+        display: inline-flex;
+        flex-direction: column;
+      }
+
+      icon-component[name=trash] {
+        float: right;
+      }
+
+      .edit-panel {
         position: absolute;
         top: 0;
         bottom: 0;
@@ -32,22 +41,8 @@ class EditPanel extends connect(store)(PanelViewElement) {
         background-color: white;
       }
 
-      :host([active]) {
+      :host([active]) .edit-panel {
         transform: translate3d(0, 0, 0);
-      }
-
-      .edit-panel {
-        margin: 0.8rem;
-        box-sizing: border-box;
-      }
-
-      icon-component {
-        display: inline-flex;
-        flex-direction: column;
-      }
-
-      icon-component[name=trash] {
-        float: right;
       }
 
       .textarea {
@@ -63,14 +58,14 @@ class EditPanel extends connect(store)(PanelViewElement) {
   @property({ type: String }) _comment;
 
   onBackButton() {
-    store.dispatch(openMainPanel());
+    store.dispatch(openTodoPanel());
   }
 
   deleteTodoItem(id) {
     TodoDB.delete(id)
       .then((data) => {
         store.dispatch(deleteTodo(id));
-        store.dispatch(openMainPanel());
+        store.dispatch(openTodoPanel());
       })
       .catch((e) => console.log('error while deleting too: ', e));
   }
@@ -105,7 +100,6 @@ class EditPanel extends connect(store)(PanelViewElement) {
 
   constructor() {
     super();
-
     this.addEventListener('transitionend', () => {
       const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
       if (!textAreaTitle || this.active === undefined) return;
@@ -115,6 +109,15 @@ class EditPanel extends connect(store)(PanelViewElement) {
         textAreaTitle.focus = false;
       }
     });
+  }
+
+  setFocusTextAreaTitle() {
+    const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
+    if (this.active) {
+      textAreaTitle.focus = true;
+    } else if (!this.active) {
+      textAreaTitle.focus = false;
+    }
   }
 
   render() {

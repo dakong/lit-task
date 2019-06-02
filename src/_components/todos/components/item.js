@@ -5,7 +5,7 @@ import { ENTER_KEY_CODE } from '../../../constants/key-codes';
 import '../../ui/icon';
 
 import { deleteTodo, updateTodo, addTodo } from '../action-creators';
-import { openEditPanel } from '../../../app/action-creators';
+import { openEditPanel } from '../../main-panel/action-creators';
 
 import '../../ui/underline';
 

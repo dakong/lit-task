@@ -1,110 +1,42 @@
-import { LitElement, html, property, css } from 'lit-element';
+import { html, css, LitElement, property } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
 import { store } from '../../store';
-import { PanelViewElement } from '../panel-view-element';
-import todos from '../todos';
 
-import { initializeItems } from './action-creators';
-import '../ui/icon';
+import todoPanel from '../todo-panel';
+import editPanel from '../edit-panel';
 
-todos.componentLoader.addButton();
-todos.componentLoader.list();
-todos.componentLoader.item();
+todoPanel.componentLoader.todoPanel();
+editPanel.componentLoader.editPanel();
 
 class MainPanel extends connect(store)(LitElement) {
   static styles = css`
-    :host {
+  :host {
+      width: 375px;
+      height: auto;
       display: block;
+      margin: 32px auto;
+      overflow: hidden;
     }
 
-    div[slot=header] {
-      display: flex;
-      align-items: center;
+    div {
+      position: relative;
     }
+  `;
 
-    todo-add {
-      flex-basis: 100%;
-    }
-
-    icon-component {
-      align-self: flex-end;
-      padding-right: 0.8rem;
-    }
-
-    todo-list.completed {
-      margin-top: 1.0rem;
-    }
-
-    h1 {
-      padding-left: 1.2rem;
-      font-size: 1.0rem;
-      font-family: 'system-ui';
-      font-weight: 400;
-    }
-  `
-
-  @property({ type: String }) listID = '';
-  @property({ type: Array }) todoList = [];
-
-  firstUpdated() {
-    store.dispatch(initializeItems());
-  }
+  @property({ type: String }) _panel = 'todo_panel';
 
   render() {
-    console.log(this.todoList);
-    const completedTodos = this.todoList.filter(item => item.done);
-    const todos = this.todoList.filter(item => !item.done);
-
-    const completedList = completedTodos.map((item) => {
-      console.log(item.done);
-      return html`
-        <todo-item
-          slot="item"
-          ?checked="${item.done}"
-          .id="${item.uuid}"
-          .value="${item.value}"
-          .comment="${item.comment}"
-        >
-        </todo-item>
-      `;
-    });
-
-    const todoList = todos.map((item) => (
-      html`
-        <todo-item
-          slot="item"
-          ?checked="${item.done}"
-          .id="${item.uuid}"
-          .value="${item.value}"
-          .comment="${item.comment}"
-        >
-        </todo-item>
-      `
-    ));
-
     return html`
       <div>
-        <todo-list class="todos">
-          <div slot="header">
-            <todo-add></todo-add>
-            <icon-component name="elipsis-vertical"></icon-component>
-          </div>
-          ${todoList}
-        </todo-list>
-
-        <todo-list class="completed">
-          <div slot="header">
-            <h1>Completed (${completedList.length})</h1>
-          </div>
-          ${completedList}
-        </todo-list>
+        <todo-panel class="panel"></todo-panel>
+        <edit-panel class="panel" ?active="${this._panel === 'edit_panel'}"></edit-panel>
       </div>
     `;
   }
 
   stateChanged(state) {
-    this.todoList = state.todos;
+    this._panel = state.app.panel;
   }
 }
 

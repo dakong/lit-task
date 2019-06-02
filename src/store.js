@@ -9,7 +9,7 @@ import thunk from 'redux-thunk';
 import { lazyReducerEnhancer } from 'pwa-helpers/lazy-reducer-enhancer.js';
 
 import todos from './_components/todos';
-import appReducers from './app/reducers';
+import appReducers from './_components/main-panel/reducers';
 
 const devCompose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

@@ -1,21 +1,16 @@
-import todos from '../todos';
-import TodoDB from '../../indexed-db/todo-db';
-const { fetchTodoItems } = todos.actionCreators;
+import { NAVIGATE_EDIT_PANEL, NAVIGATE_TODO_PANEL } from './action-types';
 
-async function initDB() {
-  await TodoDB.initializeDB();
-  const todos = await TodoDB.getAll();
-  todos.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
-  return todos;
-}
+export const openEditPanel = ({ uuid, value, comment }) => {
+  return {
+    uuid,
+    value,
+    comment,
+    type: NAVIGATE_EDIT_PANEL,
+  };
+};
 
-export const initializeItems = function () {
-  return async (dispatch) => {
-    try {
-      const todos = await initDB();
-      dispatch(fetchTodoItems(todos));
-    } catch (e) {
-      console.log(e);
-    }
+export const openTodoPanel = () => {
+  return {
+    type: NAVIGATE_TODO_PANEL,
   };
 };
