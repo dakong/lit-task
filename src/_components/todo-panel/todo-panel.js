@@ -44,15 +44,26 @@ class TodoPanel extends connect(store)(LitElement) {
       font-size: 1.0rem;
       font-family: 'system-ui';
       font-weight: 400;
+      width: 100%;
+      user-select: none;
+    }
+
+    todo-list.completed div[slot=header] {
+      cursor: pointer;
     }
   `
 
   @property({ type: String }) listID = '';
   @property({ type: Array }) todoList = [];
   @property({ type: Boolean }) isLoading = false;
+  @property({ type: Boolean }) showCompleted = true;
 
   firstUpdated() {
     store.dispatch(initializeItems());
+  }
+
+  toggleCompletedList(e) {
+    this.showCompleted = !this.showCompleted;
   }
 
   renderLoadingState() {
@@ -99,10 +110,11 @@ class TodoPanel extends connect(store)(LitElement) {
       </todo-list>
 
       <todo-list class="completed">
-        <div slot="header">
+        <div slot="header" @click=${this.toggleCompletedList}>
           <h1>Completed (${completedList.length})</h1>
+          <icon-component name="${this.showCompleted ? 'chevron-up' : 'chevron-down'}"></icon-component>
         </div>
-        ${completedList}
+        ${this.showCompleted ? completedList : null}
       </todo-list>`;
   }
 

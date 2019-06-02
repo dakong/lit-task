@@ -8,6 +8,8 @@ import addIcon from './svg/add';
 import trashIcon from './svg/trash';
 import leftArrowIcon from './svg/left-arrow';
 import elipsisVertical from './svg/ellipsis-v';
+import chevronUp from './svg/chevron-up';
+import chevronDown from './svg/chevron-down';
 
 class Icon extends LitElement {
   static styles = css`
@@ -60,6 +62,10 @@ class Icon extends LitElement {
         return html`${leftArrowIcon}`;
       case 'elipsis-vertical':
         return html`${elipsisVertical}`;
+      case 'chevron-up':
+        return html`${chevronUp}`;
+      case 'chevron-down':
+        return html`${chevronDown}`;
     }
   }
 
