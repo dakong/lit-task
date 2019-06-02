@@ -3,6 +3,7 @@ import { connect } from 'pwa-helpers/connect-mixin.js';
 
 import { store } from '../../store';
 
+import '../ui/loader';
 import todoPanel from '../todo-panel';
 import editPanel from '../edit-panel';
 

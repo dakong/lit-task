@@ -5,6 +5,9 @@ import { store } from '../../store';
 import todos from '../todos';
 
 import { initializeItems } from './action-creators';
+import '../ui/loader';
+import '../ui/loader/bar-loader';
+
 import '../ui/icon';
 
 todos.componentLoader.addButton();
@@ -15,6 +18,7 @@ class TodoPanel extends connect(store)(LitElement) {
   static styles = css`
     :host {
       display: block;
+      position: relative;
     }
 
     div[slot=header] {
@@ -45,18 +49,21 @@ class TodoPanel extends connect(store)(LitElement) {
 
   @property({ type: String }) listID = '';
   @property({ type: Array }) todoList = [];
+  @property({ type: Boolean }) isLoading = false;
 
   firstUpdated() {
     store.dispatch(initializeItems());
   }
 
-  render() {
-    console.log(this.todoList);
-    const completedTodos = this.todoList.filter(item => item.done);
-    const todos = this.todoList.filter(item => !item.done);
+  renderLoadingState() {
+    return html`<lit-bar-loader title="Loading your todos"></lit-bar-loader>`;
+  }
+
+  renderTodoList(todoList) {
+    const completedTodos = todoList.filter(item => item.done);
+    const todos = todoList.filter(item => !item.done);
 
     const completedList = completedTodos.map((item) => {
-      console.log(item.done);
       return html`
         <todo-item
           slot="item"
@@ -69,7 +76,7 @@ class TodoPanel extends connect(store)(LitElement) {
       `;
     });
 
-    const todoList = todos.map((item) => (
+    const inProgressList = todos.map((item) => (
       html`
         <todo-item
           slot="item"
@@ -83,27 +90,37 @@ class TodoPanel extends connect(store)(LitElement) {
     ));
 
     return html`
-      <div>
-        <todo-list class="todos">
-          <div slot="header">
-            <todo-add></todo-add>
-            <icon-component name="elipsis-vertical"></icon-component>
-          </div>
-          ${todoList}
-        </todo-list>
+      <todo-list class="todos">
+        <div slot="header">
+          <todo-add></todo-add>
+          <icon-component name="elipsis-vertical"></icon-component>
+        </div>
+        ${inProgressList}
+      </todo-list>
 
-        <todo-list class="completed">
-          <div slot="header">
-            <h1>Completed (${completedList.length})</h1>
-          </div>
-          ${completedList}
-        </todo-list>
+      <todo-list class="completed">
+        <div slot="header">
+          <h1>Completed (${completedList.length})</h1>
+        </div>
+        ${completedList}
+      </todo-list>`;
+  }
+
+  renderTodoPanel(todoList, isLoading) {
+    return !isLoading ? this.renderTodoList(todoList) : this.renderLoadingState();
+  }
+
+  render() {
+    return html`
+      <div>
+        ${this.renderTodoPanel(this.todoList, this.isLoading)}
       </div>
     `;
   }
 
   stateChanged(state) {
     this.todoList = state.todos;
+    this.isLoading = state.todoPanel.isLoadingTodos;
   }
 }
 

@@ -10,6 +10,7 @@ import { lazyReducerEnhancer } from 'pwa-helpers/lazy-reducer-enhancer.js';
 
 import todos from './_components/todos';
 import appReducers from './_components/main-panel/reducers';
+import todoPanelReducers from './_components/todo-panel/reducers';
 
 const devCompose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -23,6 +24,7 @@ export const store = createStore(
 );
 
 store.addReducers({
+  todoPanel: todoPanelReducers,
   todos: todos.reducers,
   app: appReducers,
 });
