@@ -31,6 +31,17 @@ class MainPanel extends connect(store)(LitElement) {
       align-self: flex-end;
       padding-right: 0.8rem;
     }
+
+    todo-list.completed {
+      margin-top: 1.0rem;
+    }
+
+    h1 {
+      padding-left: 1.2rem;
+      font-size: 1.0rem;
+      font-family: 'system-ui';
+      font-weight: 400;
+    }
   `
 
   @property({ type: String }) listID = '';
@@ -41,7 +52,25 @@ class MainPanel extends connect(store)(LitElement) {
   }
 
   render() {
-    const todoList = this.todoList.map(item => (
+    console.log(this.todoList);
+    const completedTodos = this.todoList.filter(item => item.done);
+    const todos = this.todoList.filter(item => !item.done);
+
+    const completedList = completedTodos.map((item) => {
+      console.log(item.done);
+      return html`
+        <todo-item
+          slot="item"
+          ?checked="${item.done}"
+          .id="${item.uuid}"
+          .value="${item.value}"
+          .comment="${item.comment}"
+        >
+        </todo-item>
+      `;
+    });
+
+    const todoList = todos.map((item) => (
       html`
         <todo-item
           slot="item"
@@ -55,13 +84,22 @@ class MainPanel extends connect(store)(LitElement) {
     ));
 
     return html`
-      <todo-list>
-        <div slot="header">
-          <todo-add></todo-add>
-          <icon-component name="edit"></icon-component>
-        </div>
-        ${todoList}
-      </todo-list>
+      <div>
+        <todo-list class="todos">
+          <div slot="header">
+            <todo-add></todo-add>
+            <icon-component name="elipsis-vertical"></icon-component>
+          </div>
+          ${todoList}
+        </todo-list>
+
+        <todo-list class="completed">
+          <div slot="header">
+            <h1>Completed (${completedList.length})</h1>
+          </div>
+          ${completedList}
+        </todo-list>
+      </div>
     `;
   }
 

@@ -7,6 +7,7 @@ import doneIcon from './svg/done';
 import addIcon from './svg/add';
 import trashIcon from './svg/trash';
 import leftArrowIcon from './svg/left-arrow';
+import elipsisVertical from './svg/ellipsis-v';
 
 class Icon extends LitElement {
   static styles = css`
@@ -57,6 +58,8 @@ class Icon extends LitElement {
         return html`${trashIcon}`;
       case 'left-arrow':
         return html`${leftArrowIcon}`;
+      case 'elipsis-vertical':
+        return html`${elipsisVertical}`;
     }
   }
 

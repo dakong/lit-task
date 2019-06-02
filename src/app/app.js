@@ -2,7 +2,6 @@ import { html, css, LitElement, property } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
 import { store } from '../store';
-import { blueGray50 } from '../styles/colors';
 
 import mainPanel from '../_components/main-panel';
 import editPanel from '../_components/edit-panel';
@@ -18,8 +17,6 @@ class MainApp extends connect(store)(LitElement) {
       display: block;
       margin: 32px auto;
       overflow: hidden;
-      border: solid 1px ${blueGray50};
-      border-radius: 3px;
     }
 
     div {

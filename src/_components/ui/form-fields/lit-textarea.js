@@ -50,7 +50,16 @@ class LitTextArea extends LitElement {
 
       textarea:focus ~ .underline:before,
       textarea:focus ~ .underline:after {
-       width: 50%;
+        width: 50%;
+        animation-name: expand-width;
+        animation-duration: 0.25s;
+        animation-fill-mode: forwards;
+        animation-timing-function: ease-out;
+      }
+
+      @keyframes expand-width {
+        from {width: 0px;}
+        to {width: 50%; }
       }
     `;
   }

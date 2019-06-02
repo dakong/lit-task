@@ -2,16 +2,19 @@ import { html, LitElement, css } from 'lit-element';
 
 class TodoList extends LitElement {
   static styles = css`
-    .header {
+    :host {
+      display: block;
     }
   `;
 
   render() {
     return html`
-      <div class="header">
-        <slot name="header"></slot>
+      <div>
+        <div class="header">
+          <slot name="header"></slot>
+        </div>
+        <slot name="item"></slot>
       </div>
-      <slot name="item"></slot>
     `;
   }
 }

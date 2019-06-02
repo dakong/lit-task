@@ -22,7 +22,8 @@ class EditPanel extends connect(store)(PanelViewElement) {
         top: 0;
         bottom: 0;
         right: 0;
-        width: var(--app-drawer-width, 375px);
+        box-sizing: border-box;
+        width: var(--app-drawer-width, 100%);
         transition-property: -webkit-transform;
         transition-property: transform;
         -webkit-transform: translate3d(100%, 0, 0);
@@ -33,6 +34,11 @@ class EditPanel extends connect(store)(PanelViewElement) {
 
       :host([active]) {
         transform: translate3d(0, 0, 0);
+      }
+
+      .edit-panel {
+        margin: 0.8rem;
+        box-sizing: border-box;
       }
 
       icon-component {
