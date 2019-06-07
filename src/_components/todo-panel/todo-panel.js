@@ -59,6 +59,11 @@ class TodoPanel extends connect(store)(LitElement) {
   @property({ type: Boolean }) isLoading = false;
   @property({ type: Boolean }) showCompleted = true;
 
+  stateChanged(state) {
+    this.todoList = state.todos;
+    this.isLoading = state.todoPanel.isLoadingTodos;
+  }
+
   firstUpdated() {
     store.dispatch(initializeItems());
   }
@@ -71,7 +76,7 @@ class TodoPanel extends connect(store)(LitElement) {
     return html`<lit-bar-loader title="Loading your todos"></lit-bar-loader>`;
   }
 
-  mapTodoToHTML(todo) {
+  renderTodoItem(todo) {
     return (
       html`
         <todo-item
@@ -86,43 +91,49 @@ class TodoPanel extends connect(store)(LitElement) {
     );
   }
 
-  renderTodoList(todoList) {
+  renderTodoList(todos) {
+    return html`
+      <todo-list class="todos">
+      <div slot="header">
+        <todo-add></todo-add>
+        <icon-component name="elipsis-vertical"></icon-component>
+      </div>
+        ${repeat(todos, (todos) => todos.uuid, this.renderTodoItem)}
+      </todo-list>
+    `;
+  }
+
+  renderCompletedList(completed) {
+    const completedTodosToDisplay = this.showCompleted ? completed : [];
+    return html`
+      <todo-list class="completed">
+        <div slot="header" @click=${this.toggleCompletedList}>
+          <h1>Completed (${completed.length})</h1>
+          <icon-component name="${this.showCompleted ? 'chevron-up' : 'chevron-down'}"></icon-component>
+        </div>
+        ${repeat(completedTodosToDisplay, (todos) => todos.uuid, this.renderTodoItem)}
+      </todo-list>
+    `;
+  }
+
+  renderList(todoList) {
     const completedTodos = todoList.filter(item => item.done);
     const todos = todoList.filter(item => !item.done);
 
     return html`
-      <todo-list class="todos">
-        <div slot="header">
-          <todo-add></todo-add>
-          <icon-component name="elipsis-vertical"></icon-component>
-        </div>
-        ${repeat(todos, (todos) => todos.uuid, this.mapTodoToHTML)}
-      </todo-list>
-
-      <todo-list class="completed">
-        <div slot="header" @click=${this.toggleCompletedList}>
-          <h1>Completed (${completedTodos.length})</h1>
-          <icon-component name="${this.showCompleted ? 'chevron-up' : 'chevron-down'}"></icon-component>
-        </div>
-        ${repeat(completedTodos, (todos) => todos.uuid, this.mapTodoToHTML)}
-      </todo-list>`;
-  }
-
-  renderTodoPanel(todoList, isLoading) {
-    return !isLoading ? this.renderTodoList(todoList) : '';
-  }
-
-  render() {
-    return html`
-      <div>
-        ${this.renderTodoPanel(this.todoList, this.isLoading)}
-      </div>
+      ${this.renderTodoList(todos)}
+      ${this.renderCompletedList(completedTodos)}
     `;
   }
 
-  stateChanged(state) {
-    this.todoList = state.todos;
-    this.isLoading = state.todoPanel.isLoadingTodos;
+  renderTodoPanel(todoList, isLoading) {
+    return !isLoading ? this.renderList(todoList) : '';
+  }
+
+  render() {
+    return !this.isLoading
+      ? this.renderList(this.todoList)
+      : this.renderLoadingState();
   }
 }
 
