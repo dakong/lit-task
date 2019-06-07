@@ -1,4 +1,5 @@
 import { LitElement, html, property, css } from 'lit-element';
+import { repeat } from 'lit-html/directives/repeat';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
 import { store } from '../../store';
@@ -70,35 +71,24 @@ class TodoPanel extends connect(store)(LitElement) {
     return html`<lit-bar-loader title="Loading your todos"></lit-bar-loader>`;
   }
 
-  renderTodoList(todoList) {
-    const completedTodos = todoList.filter(item => item.done);
-    const todos = todoList.filter(item => !item.done);
-
-    const completedList = completedTodos.map((item) => {
-      return html`
-        <todo-item
-          slot="item"
-          ?checked="${item.done}"
-          .id="${item.uuid}"
-          .value="${item.value}"
-          .comment="${item.comment}"
-        >
-        </todo-item>
-      `;
-    });
-
-    const inProgressList = todos.map((item) => (
+  mapTodoToHTML(todo) {
+    return (
       html`
         <todo-item
           slot="item"
-          ?checked="${item.done}"
-          .id="${item.uuid}"
-          .value="${item.value}"
-          .comment="${item.comment}"
+          ?checked="${todo.done}"
+          .id="${todo.uuid}"
+          .value="${todo.value}"
+          .comment="${todo.comment}"
         >
         </todo-item>
       `
-    ));
+    );
+  }
+
+  renderTodoList(todoList) {
+    const completedTodos = todoList.filter(item => item.done);
+    const todos = todoList.filter(item => !item.done);
 
     return html`
       <todo-list class="todos">
@@ -106,20 +96,20 @@ class TodoPanel extends connect(store)(LitElement) {
           <todo-add></todo-add>
           <icon-component name="elipsis-vertical"></icon-component>
         </div>
-        ${inProgressList}
+        ${repeat(todos, (todos) => todos.uuid, this.mapTodoToHTML)}
       </todo-list>
 
       <todo-list class="completed">
         <div slot="header" @click=${this.toggleCompletedList}>
-          <h1>Completed (${completedList.length})</h1>
+          <h1>Completed (${completedTodos.length})</h1>
           <icon-component name="${this.showCompleted ? 'chevron-up' : 'chevron-down'}"></icon-component>
         </div>
-        ${this.showCompleted ? completedList : null}
+        ${repeat(completedTodos, (todos) => todos.uuid, this.mapTodoToHTML)}
       </todo-list>`;
   }
 
   renderTodoPanel(todoList, isLoading) {
-    return !isLoading ? this.renderTodoList(todoList) : this.renderLoadingState();
+    return !isLoading ? this.renderTodoList(todoList) : '';
   }
 
   render() {

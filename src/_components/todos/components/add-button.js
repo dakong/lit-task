@@ -14,6 +14,7 @@ class TodoAdd extends connect(store)(LitElement) {
     :host {
       display: block;
       cursor: pointer;
+      user-select: none;
     }
 
     .add-button {

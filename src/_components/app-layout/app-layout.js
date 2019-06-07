@@ -36,27 +36,32 @@ class AppLayout extends LitElement {
 
     .content {
       box-sizing: border-box;
-      padding-top: 0;
-      padding-right: 1.2rem;
-      padding-bottom: 0;
-      padding-left: 1.2rem;
-      max-width: 668px;
-      min-width: 375px;
       margin-left: var(--app-sidebar-width);
     }
+
+    .content-container {
+      margin-top: 0;
+      margin-right: 1.5rem;
+      margin-bottom: 1.5rem;
+      margin-left: 4.5rem;
+      max-width: 668px;
+      min-width: 375px;
+    }
   `;
+
   render() {
     return html`
       <div class="navbar">
-        <slot name="logo"></slot>
-        <slot name="searchbar"></slot>
+        <slot name="navbar"></slot>
       </div>
       <main>
         <div class="sidebar">
           <slot name="sidebar"></slot>
         </div>
         <div class="content">
-          <slot name="content"></slot>
+          <div class="content-container">
+            <slot name="content"></slot>
+          </div>
         </div>
       </main>
     `;
