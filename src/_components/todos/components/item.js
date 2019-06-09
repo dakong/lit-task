@@ -12,6 +12,8 @@ import '../../ui/underline';
 import {
   gray50,
   gray300,
+  secondaryText,
+  primaryText,
 } from '../../../styles/colors';
 
 import TodoDB from '../../../indexed-db/todo-db';
@@ -29,6 +31,7 @@ class TodoItem extends LitElement {
         width: 100%;
         position: relative;
         font-family: 'system-ui';
+        color: ${primaryText};
       }
 
       :host([hidden]) {
@@ -87,6 +90,9 @@ class TodoItem extends LitElement {
         overflow: hidden;
         overflow-wrap: break-word;
         word-wrap: break-word;
+        color: ${secondaryText};
+        margin: 0.2rem 0;
+        cursor: default;
       }
 
       .icon-wrapper {
@@ -100,17 +106,16 @@ class TodoItem extends LitElement {
       }
 
       .todo-edit-icon {
-        cursor: pointer;
         padding-right: 0.8rem;
       }
 
       .todo-edit-icon icon-component {
-        display: none;
+        visibility: hidden;
       }
 
       .todo-item:hover .todo-edit-icon > icon-component,
       .todo-item:focus-within .todo-edit-icon > icon-component {
-        display: block;
+        visibility: visible;
       }
 
       todo-underline {
@@ -130,6 +135,42 @@ class TodoItem extends LitElement {
     @property({ type: String, reflect: true }) value = '';
     @property({ type: String, reflect: false }) comment = '';
     @property({ type: Boolean, reflect: true }) checked;
+
+    addNewTodo() {
+      const uuid = uuidv4();
+
+      TodoDB.add(uuid)
+        .then(todo => store.dispatch(addTodo(todo)))
+        .catch(e => console.log('error while checking: ', e));
+    }
+
+    updateCheckedValue(uuid, value) {
+      const payload = {
+        uuid,
+        value,
+        column: COLUMN_DONE,
+      };
+
+      TodoDB.update(payload).then((data) => store.dispatch(updateTodo(data)))
+        .catch((e) => console.log('error while checking: ', e));
+    }
+
+    updateTodoItemValue(uuid, value) {
+      const payload = {
+        uuid,
+        value,
+        column: COLUMN_VALUE,
+      };
+
+      TodoDB.update(payload).then((data) => store.dispatch(updateTodo(data)))
+        .catch((e) => console.log('error while updating todo: ', e));
+    }
+
+    deleteTodoItem(id) {
+      TodoDB.delete(id)
+        .then((data) => store.dispatch(deleteTodo(id)))
+        .catch((e) => console.log('error while deleting too: ', e));
+    }
 
     // Handle when todo item is checked.
     onChecked(e) {
@@ -164,88 +205,66 @@ class TodoItem extends LitElement {
       e.stopPropagation();
     }
 
-    addNewTodo() {
-      const uuid = uuidv4();
-
-      TodoDB.add(uuid)
-        .then(todo => store.dispatch(addTodo(todo)))
-        .catch(e => console.log('error while checking: ', e));
+    // Add ability to check a todo item using the enter key.
+    onCheckedKeydown(e) {
+      if (e.code === ENTER_KEY_CODE) {
+        this.onChecked(e);
+      }
     }
 
-    // Add ability to check a todo item using the enter key.
-    onCheckedKeyDown(e) {
-      // Todo: fix handle checked
-      if (e.code === ENTER_KEY_CODE) { this.handleChecked(); }
+    onDeleteKeyDown(e) {
+      if (e.code === ENTER_KEY_CODE) {
+        this.onDelete(e);
+      }
+    }
+
+    onEditKeydown(e) {
+      if (e.code === ENTER_KEY_CODE) {
+        this.onFullEdit(e);
+      }
     }
 
     onTodoItemClick() {
       this.shadowRoot.querySelector('input').focus();
     }
 
-    updateCheckedValue(uuid, value) {
-      const payload = {
-        uuid,
-        value,
-        column: COLUMN_DONE,
-      };
-
-      TodoDB.update(payload).then((data) => store.dispatch(updateTodo(data)))
-        .catch((e) => console.log('error while checking: ', e));
-    }
-
-    updateTodoItemValue(uuid, value) {
-      const payload = {
-        uuid,
-        value,
-        column: COLUMN_VALUE,
-      };
-
-      TodoDB.update(payload).then((data) => store.dispatch(updateTodo(data)))
-        .catch((e) => console.log('error while updating todo: ', e));
-    }
-
-    deleteTodoItem(id) {
-      TodoDB.delete(id)
-        .then((data) => store.dispatch(deleteTodo(id)))
-        .catch((e) => console.log('error while deleting too: ', e));
-    }
-
     render() {
       const iconName = this.checked ? 'done' : 'circle';
       const isDisabled = !!this.checked;
+
       const editIcon = html`
-        <div
-          @click="${this.onFullEdit}"
-          aria-label="edit todo item"
-          class="todo-edit-icon icon-wrapper"
-        >
-          <icon-component name="edit"></icon-component>
+        <div aria-label="edit todo item" class="todo-edit-icon icon-wrapper">
+          <icon-component
+            @click="${this.onFullEdit}"
+            @keydown="${this.onEditKeydown}"
+            name="edit"
+          >
+          </icon-component>
         </div>
       `;
 
       const deleteIcon = html`
-        <div
-          @click="${this.onDelete}"
-          aria-label="delete todo item"
-          class="todo-edit-icon icon-wrapper"
-        >
-          <icon-component name="trash"></icon-component>
+        <div aria-label="delete todo item" class="todo-edit-icon icon-wrapper">
+          <icon-component
+            @click="${this.onDelete}"
+            @keydown="${this.onEditKeydown}"
+            name="trash"
+          >
+        </icon-component>
         </div>
       `;
 
       const actionIcon = this.checked ? deleteIcon : editIcon;
 
       return html`
-        <div
-          @click="${this.onTodoItemClick}"
-          class="todo-item">
-          <div
-            @click="${this.onChecked}"
-            @keydown="${this.onCheckedKeyDown}"
-            aria-label="todo item checkbox"
-            class="todo-checkbox-icon icon-wrapper"
-          >
-            <icon-component name="${iconName}"></icon-component>
+        <div @click="${this.onTodoItemClick}" class="todo-item">
+          <div aria-label="todo item checkbox" class="todo-checkbox-icon icon-wrapper">
+            <icon-component
+              @click="${this.onChecked}"
+              @keydown="${this.onCheckedKeydown}"
+              name="${iconName}"
+            >
+            </icon-component>
           </div>
           <div class="todo-input">
             <input @keyup="${this.onInputChange}" value="${this.value}" ?disabled="${isDisabled}"/>

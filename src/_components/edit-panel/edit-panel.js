@@ -120,6 +120,7 @@ class EditPanel extends connect(store)(PanelViewElement) {
   // }
 
   render() {
+    console.log('render');
     return html`
       <div class="edit-panel">
         <div class="edit-header">

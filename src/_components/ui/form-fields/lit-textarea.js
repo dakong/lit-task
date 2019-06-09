@@ -77,13 +77,13 @@ class LitTextArea extends LitElement {
   }
 
   updated() {
-    const textArea = this.shadowRoot.querySelector('textarea');
+    // const textArea = this.shadowRoot.querySelector('textarea');
 
-    if (this.focus) {
-      textArea.focus();
-    } else if (!this.focus) {
-      textArea.blur();
-    }
+    // if (this.focus) {
+    //   textArea.focus();
+    // } else if (!this.focus) {
+    //   textArea.blur();
+    // }
   }
 
   render() {

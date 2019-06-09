@@ -7,7 +7,7 @@ import TodoDB from '../../../indexed-db/todo-db';
 
 import { addTodo } from '../action-creators';
 import '../../ui/icon';
-import { blueGray50 } from '../../../styles/colors';
+import { blueGray50, primaryText } from '../../../styles/colors';
 
 class TodoAdd extends connect(store)(LitElement) {
   static styles = css`
@@ -15,6 +15,7 @@ class TodoAdd extends connect(store)(LitElement) {
       display: block;
       cursor: pointer;
       user-select: none;
+      color: ${primaryText};
     }
 
     .add-button {
@@ -33,7 +34,6 @@ class TodoAdd extends connect(store)(LitElement) {
     }
 
     p {
-      color: #273444;
       font-family: 'system-ui';
       margin: 0;
       padding: 0.8rem 0.2rem 0.8rem 1.8rem;

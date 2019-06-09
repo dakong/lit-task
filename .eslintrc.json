@@ -24,7 +24,8 @@
       "document": false,
       "navigator": false,
       "window": false,
-      "customElements": false
+      "customElements": false,
+      "CustomEvent": false
     },
 
     "rules": {
