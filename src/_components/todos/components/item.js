@@ -28,6 +28,7 @@ class TodoItem extends LitElement {
         color: #273444;
         width: 100%;
         position: relative;
+        font-family: 'system-ui';
       }
 
       :host([hidden]) {
@@ -55,7 +56,7 @@ class TodoItem extends LitElement {
         line-height: normal;
         width: 100%;
         box-sizing: border-box;
-        padding: .2rem .2rem .2rem 1.6rem;
+        padding: 1.0rem .4rem 1.0rem 1.8rem;
       }
 
       :host([checked]) input {
@@ -64,7 +65,6 @@ class TodoItem extends LitElement {
 
       input {
         font-size: 0.8rem;
-        padding: 0.8rem 0.2rem;
         width: 100%;
         background-color: inherit;
         box-sizing: border-box;
@@ -77,6 +77,16 @@ class TodoItem extends LitElement {
       input:focus {
         outline: 0;
         cursor: text;
+      }
+
+      .comment {
+        font-size: 0.8rem;
+        line-height: 1.0rem;
+        letter-spacing: .26px;
+        max-height: 32px;
+        overflow: hidden;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
       }
 
       .icon-wrapper {
@@ -122,9 +132,10 @@ class TodoItem extends LitElement {
     @property({ type: Boolean, reflect: true }) checked;
 
     // Handle when todo item is checked.
-    onChecked() {
+    onChecked(e) {
       this.checked = !this.checked;
       this.updateCheckedValue(this.id, this.checked);
+      e.stopPropagation();
     }
 
     // Handle when a todo item text is updated.
@@ -139,16 +150,18 @@ class TodoItem extends LitElement {
     }
 
     // Handle when a todo item is deleted.
-    onDelete() {
+    onDelete(e) {
       this.deleteTodoItem(this.id);
+      e.stopPropagation();
     }
 
-    onFullEdit() {
+    onFullEdit(e) {
       store.dispatch(openEditPanel({
         uuid: this.id,
         value: this.value,
         comment: this.comment,
       }));
+      e.stopPropagation();
     }
 
     addNewTodo() {
@@ -161,7 +174,12 @@ class TodoItem extends LitElement {
 
     // Add ability to check a todo item using the enter key.
     onCheckedKeyDown(e) {
+      // Todo: fix handle checked
       if (e.code === ENTER_KEY_CODE) { this.handleChecked(); }
+    }
+
+    onTodoItemClick() {
+      this.shadowRoot.querySelector('input').focus();
     }
 
     updateCheckedValue(uuid, value) {
@@ -218,7 +236,9 @@ class TodoItem extends LitElement {
       const actionIcon = this.checked ? deleteIcon : editIcon;
 
       return html`
-        <div class="todo-item">
+        <div
+          @click="${this.onTodoItemClick}"
+          class="todo-item">
           <div
             @click="${this.onChecked}"
             @keydown="${this.onCheckedKeyDown}"
@@ -229,6 +249,9 @@ class TodoItem extends LitElement {
           </div>
           <div class="todo-input">
             <input @keyup="${this.onInputChange}" value="${this.value}" ?disabled="${isDisabled}"/>
+            <div class="comment">
+              ${this.comment}
+            </div>
           </div>
           ${actionIcon}
           <todo-underline></todo-underline>

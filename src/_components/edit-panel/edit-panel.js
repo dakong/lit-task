@@ -97,27 +97,27 @@ class EditPanel extends connect(store)(PanelViewElement) {
     this.updateTodoItem(this._uuid, this._comment, COLUMN_COMMENT);
   }
 
-  constructor() {
-    super();
-    this.addEventListener('transitionend', () => {
-      const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
-      if (!textAreaTitle || this.active === undefined) return;
-      if (this.active) {
-        textAreaTitle.focus = true;
-      } else if (!this.active) {
-        textAreaTitle.focus = false;
-      }
-    });
-  }
+  // constructor() {
+  //   super();
+  //   this.addEventListener('transitionend', () => {
+  //     const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
+  //     if (!textAreaTitle || this.active === undefined) return;
+  //     if (this.active) {
+  //       textAreaTitle.focus = true;
+  //     } else if (!this.active) {
+  //       textAreaTitle.focus = false;
+  //     }
+  //   });
+  // }
 
-  setFocusTextAreaTitle() {
-    const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
-    if (this.active) {
-      textAreaTitle.focus = true;
-    } else if (!this.active) {
-      textAreaTitle.focus = false;
-    }
-  }
+  // setFocusTextAreaTitle() {
+  //   const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
+  //   if (this.active) {
+  //     textAreaTitle.focus = true;
+  //   } else if (!this.active) {
+  //     textAreaTitle.focus = false;
+  //   }
+  // }
 
   render() {
     return html`
