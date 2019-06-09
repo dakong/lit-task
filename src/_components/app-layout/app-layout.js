@@ -36,7 +36,7 @@ class AppLayout extends LitElement {
 
     .content {
       box-sizing: border-box;
-      margin-left: var(--app-sidebar-width);
+      /* margin-left: var(--app-sidebar-width); */
     }
 
     .content-container {

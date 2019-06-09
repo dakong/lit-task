@@ -7,7 +7,7 @@ class MainApp extends LitElement {
   render() {
     return html`
       <app-layout>
-        <sidebar-panel slot="sidebar"></sidebar-panel>
+        <!-- <sidebar-panel slot="sidebar"></sidebar-panel> -->
         <main-panel slot="content"></main-panel>
       </app-layout>
     `;

@@ -41,6 +41,7 @@ class Icon extends LitElement {
   @property({ type: Boolean, reflect: true }) checked;
   @property({ type: Boolean }) hover = false;
   @property({ type: String }) name = '';
+  @property({ type: Number, attribute: 'tab-index' }) tabIndex = 0;
 
   onIconHover(e) {
     this.hover = true;
@@ -71,9 +72,9 @@ class Icon extends LitElement {
 
   render() {
     return html`
-        <div id="icon" @onhover="${this.onIconHover}" tabindex="0">
-          ${this.renderIcon()}
-        </div>
+      <div id="icon" @onhover="${this.onIconHover}" tabindex="${this.tabIndex}">
+        ${this.renderIcon()}
+      </div>
     `;
   }
 }

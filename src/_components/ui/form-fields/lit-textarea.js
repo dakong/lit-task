@@ -7,6 +7,7 @@ class LitTextArea extends LitElement {
   @property({ type: String }) placeholder = '';
   @property({ type: String }) value = '';
   @property({ type: Boolean }) focus = false;
+  @property({ type: Number, attribute: 'tab-index' }) tabIndex = 0;
 
   static get styles() {
     return css`
@@ -89,7 +90,11 @@ class LitTextArea extends LitElement {
   render() {
     return html`
       <div class="textarea">
-        <textarea @keyup="${this.onTextareaChange}" name="${this.name}" placeholder="${this.placeholder}">${this.value}</textarea>
+        <textarea
+          @keyup="${this.onTextareaChange}"
+          tabindex="${this.tabIndex}"
+          name="${this.name}"
+          placeholder="${this.placeholder}">${this.value}</textarea>
         <span class="underline"></span>
       </div>
     `;

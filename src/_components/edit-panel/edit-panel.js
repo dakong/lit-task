@@ -120,20 +120,21 @@ class EditPanel extends connect(store)(PanelViewElement) {
   // }
 
   render() {
-    console.log('render');
+    const tabIndex = this.active ? 0 : -1;
+    const hidden = !this.active;
     return html`
-      <div class="edit-panel">
+      <div aria-hidden="${hidden}" class="edit-panel">
         <div class="edit-header">
-          <icon-component @click="${this.onBackButton}" name="left-arrow"></icon-component>
-          <icon-component @click="${this.onDelete}" name="trash"></icon-component>
+          <icon-component tab-index="${tabIndex}" @click="${this.onBackButton}" name="left-arrow"></icon-component>
+          <icon-component tab-index="${tabIndex}" @click="${this.onDelete}" name="trash"></icon-component>
         </div>
 
         <div class="textarea">
-          <lit-textarea @textarea-change="${this.onTitleChange}" name="title" placeholder="Enter title" value="${this._title}"></lit-textarea>
+          <lit-textarea tab-index="${tabIndex}" @textarea-change="${this.onTitleChange}" name="title" placeholder="Enter title" value="${this._title}"></lit-textarea>
         </div>
 
         <div class="textarea">
-          <lit-textarea @textarea-change="${this.onCommentChange}" name="title" placeholder="Enter details" value="${this._comment}"></lit-textarea>
+          <lit-textarea tab-index="${tabIndex}" @textarea-change="${this.onCommentChange}" name="title" placeholder="Enter details" value="${this._comment}"></lit-textarea>
         </div>
       </div>
     `;

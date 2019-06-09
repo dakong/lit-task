@@ -1,12 +1,10 @@
 import { html, css, LitElement, property } from 'lit-element';
-import uuidv4 from 'uuid/v4';
 
 import { ENTER_KEY_CODE } from '../../../constants/key-codes';
 import '../../ui/icon';
 
-import { deleteTodo, updateTodo, addTodo } from '../action-creators';
 import { openEditPanel } from '../../main-panel/action-creators';
-
+import { addNewTodo, updateCheckedValue, updateTodoItemValue, deleteTodoItem } from '../utils/dbActions';
 import '../../ui/underline';
 
 import {
@@ -15,9 +13,6 @@ import {
   secondaryText,
   primaryText,
 } from '../../../styles/colors';
-
-import TodoDB from '../../../indexed-db/todo-db';
-import { COLUMN_DONE, COLUMN_VALUE } from '../../../indexed-db/constants';
 
 import { store } from '../../../store';
 
@@ -136,46 +131,10 @@ class TodoItem extends LitElement {
     @property({ type: String, reflect: false }) comment = '';
     @property({ type: Boolean, reflect: true }) checked;
 
-    addNewTodo() {
-      const uuid = uuidv4();
-
-      TodoDB.add(uuid)
-        .then(todo => store.dispatch(addTodo(todo)))
-        .catch(e => console.log('error while checking: ', e));
-    }
-
-    updateCheckedValue(uuid, value) {
-      const payload = {
-        uuid,
-        value,
-        column: COLUMN_DONE,
-      };
-
-      TodoDB.update(payload).then((data) => store.dispatch(updateTodo(data)))
-        .catch((e) => console.log('error while checking: ', e));
-    }
-
-    updateTodoItemValue(uuid, value) {
-      const payload = {
-        uuid,
-        value,
-        column: COLUMN_VALUE,
-      };
-
-      TodoDB.update(payload).then((data) => store.dispatch(updateTodo(data)))
-        .catch((e) => console.log('error while updating todo: ', e));
-    }
-
-    deleteTodoItem(id) {
-      TodoDB.delete(id)
-        .then((data) => store.dispatch(deleteTodo(id)))
-        .catch((e) => console.log('error while deleting too: ', e));
-    }
-
     // Handle when todo item is checked.
     onChecked(e) {
       this.checked = !this.checked;
-      this.updateCheckedValue(this.id, this.checked);
+      updateCheckedValue(this.id, this.checked);
       e.stopPropagation();
     }
 
@@ -184,15 +143,15 @@ class TodoItem extends LitElement {
       const { value } = e.target;
       this.value = value;
       if (e.code === ENTER_KEY_CODE) {
-        this.addNewTodo();
+        addNewTodo();
       } else {
-        this.updateTodoItemValue(this.id, this.value);
+        updateTodoItemValue(this.id, this.value);
       }
     }
 
     // Handle when a todo item is deleted.
     onDelete(e) {
-      this.deleteTodoItem(this.id);
+      deleteTodoItem(this.id);
       e.stopPropagation();
     }
 
@@ -225,7 +184,8 @@ class TodoItem extends LitElement {
     }
 
     onTodoItemClick() {
-      this.shadowRoot.querySelector('input').focus();
+      const inputEl = this.shadowRoot.querySelector('input');
+      inputEl.focus();
     }
 
     render() {
