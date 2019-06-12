@@ -4,8 +4,8 @@ import { gray300 } from '../../styles/colors';
 class AppLayout extends LitElement {
   static styles = css`
     :host {
-      --app-sidebar-width: 280px;
-      --app-navbar-height: 64px;
+      /* --app-sidebar-width: 280px;
+      --app-navbar-height: 64px; */
     }
 
     .navbar {
@@ -14,7 +14,7 @@ class AppLayout extends LitElement {
       top: 0;
       left: 0;
       width: 100%;
-      height: var(--app-navbar-height);
+      height: var(--app-navbar-height, 64px);
       border-bottom: solid 1px ${gray300};
       z-index: 99999;
     }
@@ -22,21 +22,21 @@ class AppLayout extends LitElement {
     main {
       position: relative;
       padding-top: 1.0rem;
-      margin-top: var(--app-navbar-height);
+      margin-top: var(--app-navbar-height, 64px);
     }
 
     .sidebar {
       position: fixed;
-      top: var(--app-navbar-height);
+      top: var(--app-navbar-height, 64px);
       left: 0;
-      height: calc(100vh - var(--app-navbar-height));
-      width: var(--app-sidebar-width);
+      height: calc(100vh - var(--app-navbar-height, 64px));
+      width: var(--app-sidebar-width, 280px);
       padding-top: 1.0rem;
     }
 
     .content {
       box-sizing: border-box;
-      /* margin-left: var(--app-sidebar-width); */
+      margin-left: var(--app-sidebar-width, 280px);
     }
 
     .content-container {

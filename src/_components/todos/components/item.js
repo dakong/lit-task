@@ -43,6 +43,10 @@ class TodoItem extends LitElement {
         flex-wrap: nowrap;
       }
 
+      .todo-item:focus {
+        outline: none;
+      }
+
       .todo-item:focus-within {
         background-color: ${gray50};
       }
@@ -88,6 +92,7 @@ class TodoItem extends LitElement {
         color: ${secondaryText};
         margin: 0.2rem 0;
         cursor: default;
+        user-select: none;
       }
 
       .icon-wrapper {
@@ -109,7 +114,8 @@ class TodoItem extends LitElement {
       }
 
       .todo-item:hover .todo-edit-icon > icon-component,
-      .todo-item:focus-within .todo-edit-icon > icon-component {
+      .todo-item:focus-within .todo-edit-icon > icon-component,
+      :host([focused]) .todo-edit-icon > icon-component {
         visibility: visible;
       }
 
@@ -120,7 +126,7 @@ class TodoItem extends LitElement {
         display: none;
       }
 
-      .todo-input:focus-within ~ todo-underline {
+      :host([focused]) todo-underline {
         display: block;
       }
     `;
@@ -130,6 +136,7 @@ class TodoItem extends LitElement {
     @property({ type: String, reflect: true }) value = '';
     @property({ type: String, reflect: false }) comment = '';
     @property({ type: Boolean, reflect: true }) checked;
+    @property({ type: Boolean, reflect: true }) focused = false;
 
     // Handle when todo item is checked.
     onChecked(e) {
@@ -183,9 +190,18 @@ class TodoItem extends LitElement {
       }
     }
 
-    onTodoItemClick() {
+    onTodoItemClick(e) {
       const inputEl = this.shadowRoot.querySelector('input');
       inputEl.focus();
+      this.focused = true;
+    }
+
+    firstUpdated(changedProperties) {
+      const inputEl = this.shadowRoot.querySelector('input');
+      this.addEventListener('blur', (e) => {
+        this.focused = false;
+        inputEl.blur();
+      });
     }
 
     render() {
@@ -217,7 +233,7 @@ class TodoItem extends LitElement {
       const actionIcon = this.checked ? deleteIcon : editIcon;
 
       return html`
-        <div @click="${this.onTodoItemClick}" class="todo-item">
+        <div @click="${this.onTodoItemClick}" class="todo-item" tabindex="0">
           <div aria-label="todo item checkbox" class="todo-checkbox-icon icon-wrapper">
             <icon-component
               @click="${this.onChecked}"
@@ -228,9 +244,7 @@ class TodoItem extends LitElement {
           </div>
           <div class="todo-input">
             <input @keyup="${this.onInputChange}" value="${this.value}" ?disabled="${isDisabled}"/>
-            <div class="comment">
-              ${this.comment}
-            </div>
+            ${this.comment ? html`<div class="comment">${this.comment}</div>` : ''}
           </div>
           ${actionIcon}
           <todo-underline></todo-underline>
