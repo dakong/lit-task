@@ -30,7 +30,7 @@ class MainPanel extends connect(store)(LitElement) {
   render() {
     return html`
       <div>
-        <todo-panel class="panel"></todo-panel>
+        <todo-panel class="panel" ?active="${this.panel === 'todo_panel'}"></todo-panel>
         <edit-panel class="panel" ?active="${this._panel === 'edit_panel'}"></edit-panel>
       </div>
     `;

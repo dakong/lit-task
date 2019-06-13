@@ -191,9 +191,11 @@ class TodoItem extends LitElement {
     }
 
     onTodoItemClick(e) {
-      const inputEl = this.shadowRoot.querySelector('input');
-      inputEl.focus();
-      this.focused = true;
+      if (!this.checked) {
+        const inputEl = this.shadowRoot.querySelector('input');
+        inputEl.focus();
+        this.focused = true;
+      }
     }
 
     firstUpdated(changedProperties) {

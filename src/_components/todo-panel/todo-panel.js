@@ -53,7 +53,7 @@ class TodoPanel extends connect(store)(LitElement) {
       cursor: pointer;
     }
   `
-
+  @property({ type: Boolean }) active = false;
   @property({ type: String }) listID = '';
   @property({ type: Array }) todoList = [];
   @property({ type: Boolean }) isLoading = false;

@@ -1,4 +1,4 @@
-import { html, css, property } from 'lit-element';
+import { LitElement, html, css, property } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
 import TodoDB from '../../indexed-db/todo-db';
@@ -6,7 +6,6 @@ import { COLUMN_VALUE, COLUMN_COMMENT } from '../../indexed-db/constants';
 import { store } from '../../store';
 import { openTodoPanel } from '../main-panel/action-creators';
 import '../ui/form-fields/lit-textarea';
-import { PanelViewElement } from '../panel-view-element';
 import todos from '../todos';
 
 import '../ui/icon';
@@ -14,7 +13,7 @@ import '../ui/underline';
 
 const { deleteTodo, updateTodo } = todos.actionCreators;
 
-class EditPanel extends connect(store)(PanelViewElement) {
+class EditPanel extends connect(store)(LitElement) {
   static get styles() {
     return css`
       icon-component {
@@ -97,33 +96,25 @@ class EditPanel extends connect(store)(PanelViewElement) {
     this.updateTodoItem(this._uuid, this._comment, COLUMN_COMMENT);
   }
 
-  // constructor() {
-  //   super();
-  //   this.addEventListener('transitionend', () => {
-  //     const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
-  //     if (!textAreaTitle || this.active === undefined) return;
-  //     if (this.active) {
-  //       textAreaTitle.focus = true;
-  //     } else if (!this.active) {
-  //       textAreaTitle.focus = false;
-  //     }
-  //   });
-  // }
+  constructor() {
+    super();
+    this.addEventListener('transitionend', () => {
+      console.log('transition end');
+    });
+  }
 
-  // setFocusTextAreaTitle() {
-  //   const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
-  //   if (this.active) {
-  //     textAreaTitle.focus = true;
-  //   } else if (!this.active) {
-  //     textAreaTitle.focus = false;
-  //   }
-  // }
+  onTransitionEnd(e) {
+    if (this.active) {
+      const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
+      textAreaTitle.shadowRoot.querySelector('textarea').focus();
+    }
+  }
 
   render() {
     const tabIndex = this.active ? 0 : -1;
     const hidden = !this.active;
     return html`
-      <div aria-hidden="${hidden}" class="edit-panel">
+      <div aria-hidden="${hidden}" class="edit-panel" @transitionend="${this.onTransitionEnd}">
         <div class="edit-header">
           <icon-component tab-index="${tabIndex}" @click="${this.onBackButton}" name="left-arrow"></icon-component>
           <icon-component tab-index="${tabIndex}" @click="${this.onDelete}" name="trash"></icon-component>
