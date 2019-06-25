@@ -4,6 +4,8 @@ import { connect } from 'pwa-helpers/connect-mixin.js';
 import TodoDB from '../../indexed-db/todo-db';
 import { COLUMN_VALUE, COLUMN_COMMENT } from '../../indexed-db/constants';
 import { store } from '../../store';
+import { ENTER_KEY_CODE } from '../../constants/key-codes';
+
 import { openTodoPanel } from '../main-panel/action-creators';
 import '../ui/form-fields/lit-textarea';
 import todos from '../todos';
@@ -56,10 +58,6 @@ class EditPanel extends connect(store)(LitElement) {
   @property({ type: String }) _title;
   @property({ type: String }) _comment;
 
-  onBackButton() {
-    store.dispatch(openTodoPanel());
-  }
-
   deleteTodoItem(id) {
     TodoDB.delete(id)
       .then((data) => {
@@ -69,8 +67,23 @@ class EditPanel extends connect(store)(LitElement) {
       .catch((e) => console.log('error while deleting too: ', e));
   }
 
-  onDelete() {
+  onBackButtonClick() {
+    store.dispatch(openTodoPanel());
+  }
+  onDeleteButtonClick() {
     this.deleteTodoItem(this._uuid);
+  }
+
+  onBackButtonKeydown(e) {
+    if (e.code === ENTER_KEY_CODE) {
+      store.dispatch(openTodoPanel());
+    }
+  }
+
+  onDeleteButtonKeydown(e) {
+    if (e.code === ENTER_KEY_CODE) {
+      this.deleteTodoItem(this._uuid);
+    }
   }
 
   updateTodoItem(uuid, value, column) {
@@ -116,8 +129,8 @@ class EditPanel extends connect(store)(LitElement) {
     return html`
       <div aria-hidden="${hidden}" class="edit-panel" @transitionend="${this.onTransitionEnd}">
         <div class="edit-header">
-          <icon-component tab-index="${tabIndex}" @click="${this.onBackButton}" name="left-arrow"></icon-component>
-          <icon-component tab-index="${tabIndex}" @click="${this.onDelete}" name="trash"></icon-component>
+          <icon-component tab-index="${tabIndex}" @click="${this.onBackButtonClick}" @keydown="${this.onBackButtonKeydown}" name="left-arrow"></icon-component>
+          <icon-component tab-index="${tabIndex}" @click="${this.onDeleteButtonClick}" @keydown="${this.onDeleteButtonKeydown}" name="trash"></icon-component>
         </div>
 
         <div class="textarea">
