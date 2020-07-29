@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
-import '../_components/main-panel';
-import '../_components/sidebar-panel';
-import '../_components/app-layout';
+import '../components/main-panel';
+import '../components/sidebar';
+import '../components/app-layout';
 
 class MainApp extends LitElement {
   static styles = css`

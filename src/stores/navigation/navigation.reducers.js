@@ -1,5 +1,5 @@
-import createReducer from '../../_utils/create-reducer';
-import { NAVIGATE_EDIT_PANEL, NAVIGATE_TODO_PANEL } from './action-types';
+import createReducer from '../../utils/create-reducer';
+import { NAVIGATE_EDIT_PANEL, NAVIGATE_TODO_PANEL } from './navigation.action-types';
 const DEFAULT_APP_STATE = {
   panel: 'todo_panel',
   currentEditable: {},

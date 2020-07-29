@@ -1,14 +1,11 @@
 import { html, css, LitElement, property } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
-import { store } from '../../store';
+import { store } from '../stores';
 
-import '../ui/loader';
-import todoPanel from '../todo-panel';
-import editPanel from '../edit-panel';
-
-todoPanel.componentLoader.todoPanel();
-editPanel.componentLoader.editPanel();
+import './ui/loader';
+import './todo-panel';
+import './edit-panel';
 
 class MainPanel extends connect(store)(LitElement) {
   static styles = css`
@@ -37,7 +34,7 @@ class MainPanel extends connect(store)(LitElement) {
   }
 
   stateChanged(state) {
-    this._panel = state.app.panel;
+    this._panel = state.navigation.panel;
   }
 }
 

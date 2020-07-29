@@ -2,9 +2,9 @@ import uuidv4 from 'uuid/v4';
 
 import TodoDB from '../../../indexed-db/todo-db';
 import { COLUMN_DONE, COLUMN_VALUE } from '../../../indexed-db/constants';
-import { store } from '../../../store';
+import { store } from '../../../stores';
 
-import { deleteTodo, updateTodo, addTodo } from '../action-creators';
+import { deleteTodo, updateTodo, addTodo } from '../../../stores/todos/todos.action-creators';
 
 export function addNewTodo() {
   const uuid = uuidv4();

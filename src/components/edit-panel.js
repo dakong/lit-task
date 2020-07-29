@@ -1,19 +1,18 @@
 import { LitElement, html, css, property } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
-import TodoDB from '../../indexed-db/todo-db';
-import { COLUMN_VALUE, COLUMN_COMMENT } from '../../indexed-db/constants';
-import { store } from '../../store';
-import { ENTER_KEY_CODE } from '../../constants/key-codes';
+import TodoDB from '../indexed-db/todo-db';
+import { COLUMN_VALUE, COLUMN_COMMENT } from '../indexed-db/constants';
+import { store } from '../stores';
+import { ENTER_KEY_CODE } from '../constants/key-codes';
 
-import { openTodoPanel } from '../main-panel/action-creators';
-import '../ui/form-fields/lit-textarea';
-import todos from '../todos';
+import { openTodoPanel } from '../stores/navigation/navigation.action-creators';
+import './ui/form-fields/lit-textarea';
 
-import '../ui/icon';
-import '../ui/underline';
+import './ui/icon';
+import './ui/underline';
 
-const { deleteTodo, updateTodo } = todos.actionCreators;
+import { deleteTodo, updateTodo } from '../stores/todos/todos.action-creators';
 
 class EditPanel extends connect(store)(LitElement) {
   static get styles() {
@@ -145,7 +144,7 @@ class EditPanel extends connect(store)(LitElement) {
   }
 
   stateChanged(state) {
-    const currentItem = state.app.currentEditable;
+    const currentItem = state.navigation.currentEditable;
 
     this._uuid = currentItem.uuid;
     this._title = currentItem.value;

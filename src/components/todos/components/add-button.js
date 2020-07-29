@@ -2,10 +2,10 @@ import { html, LitElement, css } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 import uuidv4 from 'uuid/v4';
 
-import { store } from '../../../store';
+import { store } from '../../../stores';
 import TodoDB from '../../../indexed-db/todo-db';
 
-import { addTodo } from '../action-creators';
+import { addTodo } from '../../../stores/todos/todos.action-creators';
 import '../../ui/icon';
 import { blueGray50, primaryText } from '../../../styles/colors';
 

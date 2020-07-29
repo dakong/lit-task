@@ -2,14 +2,14 @@ import { LitElement, html, property, css } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
-import { store } from '../../store';
-import todos from '../todos';
+import { store } from '../stores';
+import todos from './todos';
 
-import { initializeItems } from './action-creators';
-import '../ui/loader';
-import '../ui/loader/bar-loader';
+import { initializeItems } from '../stores/requesting/requesting.action-creators';
+import './ui/loader';
+import './ui/loader/bar-loader';
 
-import '../ui/icon';
+import './ui/icon';
 
 todos.componentLoader.addButton();
 todos.componentLoader.list();
@@ -61,7 +61,7 @@ class TodoPanel extends connect(store)(LitElement) {
 
   stateChanged(state) {
     this.todoList = state.todos;
-    this.isLoading = state.todoPanel.isLoadingTodos;
+    this.isLoading = state.requesting.isLoadingTodos;
   }
 
   firstUpdated() {
@@ -94,10 +94,10 @@ class TodoPanel extends connect(store)(LitElement) {
   renderTodoList(todos) {
     return html`
       <todo-list class="todos">
-      <div slot="header">
-        <todo-add></todo-add>
-        <icon-component name="elipsis-vertical"></icon-component>
-      </div>
+        <div slot="header">
+          <todo-add></todo-add>
+          <icon-component name="elipsis-vertical"></icon-component>
+        </div>
         ${repeat(todos, (todos) => todos.uuid, this.renderTodoItem)}
       </todo-list>
     `;

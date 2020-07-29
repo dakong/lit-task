@@ -4,8 +4,8 @@
   "description": "Simple todo app built using lit element",
   "main": "index.js",
   "scripts": {
-    "webpack:build": "webpack --config webpack.config.js",
-    "webpack:start": "webpack-dev-server --config webpack.config.js --open"
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack-dev-server --config webpack.config.js --open"
   },
   "author": "Daniel Kong",
   "license": "BSD-3-Clause",

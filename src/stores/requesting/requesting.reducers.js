@@ -1,5 +1,5 @@
-import createReducer from '../../_utils/create-reducer';
-import { LOAD_TODOS_STARTED, LOAD_TODOS_COMPLETE } from './action-types';
+import createReducer from '../../utils/create-reducer';
+import { LOAD_TODOS_STARTED, LOAD_TODOS_COMPLETE } from './requesting.action-types';
 
 const DEFAULT_APP_STATE = {
   isLoadingTodos: false,

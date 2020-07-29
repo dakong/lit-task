@@ -1,6 +1,9 @@
 import { LitElement, html, css } from 'lit-element';
-import { gray300 } from '../../styles/colors';
+import { gray300 } from '../styles/colors';
 
+/**
+ * Outer shell for the app. It determines the main layout of the application
+ */
 class AppLayout extends LitElement {
   static styles = css`
     :host {

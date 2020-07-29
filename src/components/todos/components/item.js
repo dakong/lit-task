@@ -3,7 +3,7 @@ import { html, css, LitElement, property } from 'lit-element';
 import { ENTER_KEY_CODE } from '../../../constants/key-codes';
 import '../../ui/icon';
 
-import { openEditPanel } from '../../main-panel/action-creators';
+import { openEditPanel } from '../../../stores/navigation/navigation.action-creators';
 import { addNewTodo, updateCheckedValue, updateTodoItemValue, deleteTodoItem } from '../utils/dbActions';
 import '../../ui/underline';
 
@@ -14,7 +14,7 @@ import {
   primaryText,
 } from '../../../styles/colors';
 
-import { store } from '../../../store';
+import { store } from '../../../stores';
 
 class TodoItem extends LitElement {
   static get styles() {

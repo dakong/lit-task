@@ -1,7 +1,3 @@
-import * as actionTypes from './action-types';
-import * as actionCreators from './action-creators';
-import reducers from './reducers';
-
 const loadAddButtonComponent = function () {
   import('./components/add-button');
 };
@@ -21,8 +17,5 @@ const componentLoader = {
 };
 
 export default {
-  actionTypes,
-  actionCreators,
-  reducers,
   componentLoader,
 };

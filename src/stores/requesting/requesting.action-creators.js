@@ -1,8 +1,6 @@
-import todos from '../todos';
 import TodoDB from '../../indexed-db/todo-db';
-import { LOAD_TODOS_STARTED, LOAD_TODOS_COMPLETE } from './action-types';
-
-const { fetchTodoItems } = todos.actionCreators;
+import { LOAD_TODOS_STARTED, LOAD_TODOS_COMPLETE } from './requesting.action-types';
+import { fetchTodoItems } from '../todos/todos.action-creators';
 
 const loadTodos = () => {
   return {

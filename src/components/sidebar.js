@@ -1,8 +1,8 @@
 import { LitElement, html, css, property } from 'lit-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
-import { store } from '../../store';
-import { gray200, gray300 } from '../../styles/colors';
+import { store } from '../stores';
+import { gray200, gray300 } from '../styles/colors';
 class SidebarPanel extends connect(store)(LitElement) {
   static styles = css`
     :host {

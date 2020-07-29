@@ -1,4 +1,4 @@
-import { NAVIGATE_EDIT_PANEL, NAVIGATE_TODO_PANEL } from './action-types';
+import { NAVIGATE_EDIT_PANEL, NAVIGATE_TODO_PANEL } from './navigation.action-types';
 
 export const openEditPanel = ({ uuid, value, comment }) => {
   return {
