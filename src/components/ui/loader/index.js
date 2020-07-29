@@ -1,1 +1,1 @@
-import './spin-loader';
+import "./spin-loader";

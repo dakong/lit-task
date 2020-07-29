@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element';
-import { gray300 } from '../styles/colors';
+import { LitElement, html, css } from "lit-element";
+import { gray300 } from "../styles/colors";
 
 /**
  * Outer shell for the app. It determines the main layout of the application
@@ -24,7 +24,7 @@ class AppLayout extends LitElement {
 
     main {
       position: relative;
-      padding-top: 1.0rem;
+      padding-top: 1rem;
       margin-top: var(--app-navbar-height, 64px);
     }
 
@@ -34,7 +34,7 @@ class AppLayout extends LitElement {
       left: 0;
       height: calc(100vh - var(--app-navbar-height, 64px));
       width: var(--app-sidebar-width, 280px);
-      padding-top: 1.0rem;
+      padding-top: 1rem;
     }
 
     .content {
@@ -71,4 +71,4 @@ class AppLayout extends LitElement {
   }
 }
 
-customElements.define('app-layout', AppLayout);
+customElements.define("app-layout", AppLayout);

@@ -1,20 +1,25 @@
-import { html, css, LitElement, property } from 'lit-element';
+import { html, css, LitElement, property } from "lit-element";
 
-import { ENTER_KEY_CODE } from '../../../constants/key-codes';
-import '../../ui/icon';
+import { ENTER_KEY_CODE } from "../../../constants/key-codes";
+import "../../ui/icon";
 
-import { openEditPanel } from '../../../stores/navigation/navigation.action-creators';
-import { addNewTodo, updateCheckedValue, updateTodoItemValue, deleteTodoItem } from '../utils/dbActions';
-import '../../ui/underline';
+import { openEditPanel } from "../../../stores/navigation/navigation.action-creators";
+import {
+  addNewTodo,
+  updateCheckedValue,
+  updateTodoItemValue,
+  deleteTodoItem,
+} from "../utils/dbActions";
+import "../../ui/underline";
 
 import {
   gray50,
   gray300,
   secondaryText,
   primaryText,
-} from '../../../styles/colors';
+} from "../../../styles/colors";
 
-import { store } from '../../../stores';
+import { store } from "../../../stores";
 
 class TodoItem extends LitElement {
   static get styles() {
@@ -25,7 +30,7 @@ class TodoItem extends LitElement {
         color: #273444;
         width: 100%;
         position: relative;
-        font-family: 'system-ui';
+        font-family: "system-ui";
         color: ${primaryText};
       }
 
@@ -58,7 +63,7 @@ class TodoItem extends LitElement {
         line-height: normal;
         width: 100%;
         box-sizing: border-box;
-        padding: 1.0rem .4rem 1.0rem 1.8rem;
+        padding: 1rem 0.4rem 1rem 1.8rem;
       }
 
       :host([checked]) input {
@@ -83,8 +88,8 @@ class TodoItem extends LitElement {
 
       .comment {
         font-size: 0.8rem;
-        line-height: 1.0rem;
-        letter-spacing: .26px;
+        line-height: 1rem;
+        letter-spacing: 0.26px;
         max-height: 32px;
         overflow: hidden;
         overflow-wrap: break-word;
@@ -130,129 +135,140 @@ class TodoItem extends LitElement {
         display: block;
       }
     `;
-  };
+  }
 
-    @property({ type: String }) id = '';
-    @property({ type: String, reflect: true }) value = '';
-    @property({ type: String, reflect: false }) comment = '';
-    @property({ type: Boolean, reflect: true }) checked;
-    @property({ type: Boolean, reflect: true }) focused = false;
+  @property({ type: String }) id = "";
+  @property({ type: String, reflect: true }) value = "";
+  @property({ type: String, reflect: false }) comment = "";
+  @property({ type: Boolean, reflect: true }) checked;
+  @property({ type: Boolean, reflect: true }) focused = false;
 
-    // Handle when todo item is checked.
-    onChecked(e) {
-      this.checked = !this.checked;
-      updateCheckedValue(this.id, this.checked);
-      e.stopPropagation();
+  // Handle when todo item is checked.
+  onChecked(e) {
+    this.checked = !this.checked;
+    updateCheckedValue(this.id, this.checked);
+    e.stopPropagation();
+  }
+
+  // Handle when a todo item text is updated.
+  onInputChange(e) {
+    const { value } = e.target;
+    this.value = value;
+    if (e.code === ENTER_KEY_CODE) {
+      addNewTodo();
+    } else {
+      updateTodoItemValue(this.id, this.value);
     }
+  }
 
-    // Handle when a todo item text is updated.
-    onInputChange(e) {
-      const { value } = e.target;
-      this.value = value;
-      if (e.code === ENTER_KEY_CODE) {
-        addNewTodo();
-      } else {
-        updateTodoItemValue(this.id, this.value);
-      }
-    }
+  // Handle when a todo item is deleted.
+  onDelete(e) {
+    deleteTodoItem(this.id);
+    e.stopPropagation();
+  }
 
-    // Handle when a todo item is deleted.
-    onDelete(e) {
-      deleteTodoItem(this.id);
-      e.stopPropagation();
-    }
-
-    onFullEdit(e) {
-      store.dispatch(openEditPanel({
+  onFullEdit(e) {
+    store.dispatch(
+      openEditPanel({
         uuid: this.id,
         value: this.value,
         comment: this.comment,
-      }));
-      e.stopPropagation();
+      })
+    );
+    e.stopPropagation();
+  }
+
+  // Add ability to check a todo item using the enter key.
+  onCheckedKeydown(e) {
+    if (e.code === ENTER_KEY_CODE) {
+      this.onChecked(e);
     }
+  }
 
-    // Add ability to check a todo item using the enter key.
-    onCheckedKeydown(e) {
-      if (e.code === ENTER_KEY_CODE) {
-        this.onChecked(e);
-      }
+  onDeleteKeyDown(e) {
+    if (e.code === ENTER_KEY_CODE) {
+      this.onDelete(e);
     }
+  }
 
-    onDeleteKeyDown(e) {
-      if (e.code === ENTER_KEY_CODE) {
-        this.onDelete(e);
-      }
+  onEditKeydown(e) {
+    if (e.code === ENTER_KEY_CODE) {
+      this.onFullEdit(e);
     }
+  }
 
-    onEditKeydown(e) {
-      if (e.code === ENTER_KEY_CODE) {
-        this.onFullEdit(e);
-      }
+  onTodoItemClick(e) {
+    if (!this.checked) {
+      const inputEl = this.shadowRoot.querySelector("input");
+      inputEl.focus();
+      this.focused = true;
     }
+  }
 
-    onTodoItemClick(e) {
-      if (!this.checked) {
-        const inputEl = this.shadowRoot.querySelector('input');
-        inputEl.focus();
-        this.focused = true;
-      }
-    }
+  firstUpdated(changedProperties) {
+    const inputEl = this.shadowRoot.querySelector("input");
+    this.addEventListener("blur", (e) => {
+      this.focused = false;
+      inputEl.blur();
+    });
+  }
 
-    firstUpdated(changedProperties) {
-      const inputEl = this.shadowRoot.querySelector('input');
-      this.addEventListener('blur', (e) => {
-        this.focused = false;
-        inputEl.blur();
-      });
-    }
+  render() {
+    const iconName = this.checked ? "done" : "circle";
+    const isDisabled = !!this.checked;
 
-    render() {
-      const iconName = this.checked ? 'done' : 'circle';
-      const isDisabled = !!this.checked;
+    const editIcon = html`
+      <div aria-label="edit todo item" class="todo-edit-icon icon-wrapper">
+        <icon-component
+          @click="${this.onFullEdit}"
+          @keydown="${this.onEditKeydown}"
+          name="edit"
+        >
+        </icon-component>
+      </div>
+    `;
 
-      const editIcon = html`
-        <div aria-label="edit todo item" class="todo-edit-icon icon-wrapper">
+    const deleteIcon = html`
+      <div aria-label="delete todo item" class="todo-edit-icon icon-wrapper">
+        <icon-component
+          @click="${this.onDelete}"
+          @keydown="${this.onEditKeydown}"
+          name="trash"
+        >
+        </icon-component>
+      </div>
+    `;
+
+    const actionIcon = this.checked ? deleteIcon : editIcon;
+
+    return html`
+      <div @click="${this.onTodoItemClick}" class="todo-item" tabindex="0">
+        <div
+          aria-label="todo item checkbox"
+          class="todo-checkbox-icon icon-wrapper"
+        >
           <icon-component
-            @click="${this.onFullEdit}"
-            @keydown="${this.onEditKeydown}"
-            name="edit"
+            @click="${this.onChecked}"
+            @keydown="${this.onCheckedKeydown}"
+            name="${iconName}"
           >
           </icon-component>
         </div>
-      `;
-
-      const deleteIcon = html`
-        <div aria-label="delete todo item" class="todo-edit-icon icon-wrapper">
-          <icon-component
-            @click="${this.onDelete}"
-            @keydown="${this.onEditKeydown}"
-            name="trash"
-          >
-        </icon-component>
+        <div class="todo-input">
+          <input
+            @keyup="${this.onInputChange}"
+            value="${this.value}"
+            ?disabled="${isDisabled}"
+          />
+          ${this.comment
+            ? html`<div class="comment">${this.comment}</div>`
+            : ""}
         </div>
-      `;
-
-      const actionIcon = this.checked ? deleteIcon : editIcon;
-
-      return html`
-        <div @click="${this.onTodoItemClick}" class="todo-item" tabindex="0">
-          <div aria-label="todo item checkbox" class="todo-checkbox-icon icon-wrapper">
-            <icon-component
-              @click="${this.onChecked}"
-              @keydown="${this.onCheckedKeydown}"
-              name="${iconName}"
-            >
-            </icon-component>
-          </div>
-          <div class="todo-input">
-            <input @keyup="${this.onInputChange}" value="${this.value}" ?disabled="${isDisabled}"/>
-            ${this.comment ? html`<div class="comment">${this.comment}</div>` : ''}
-          </div>
-          ${actionIcon}
-          <todo-underline></todo-underline>
-        </div>
-      `;
-    }
+        ${actionIcon}
+        <todo-underline></todo-underline>
+      </div>
+    `;
+  }
 }
 
-customElements.define('todo-item', TodoItem);
+customElements.define("todo-item", TodoItem);

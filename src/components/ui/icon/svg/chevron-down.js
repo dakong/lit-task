@@ -1,5 +1,5 @@
-import { svg } from 'lit-element';
-import { blueGray300 } from '../../../../styles/colors';
+import { svg } from "lit-element";
+import { blueGray300 } from "../../../../styles/colors";
 
 export default svg`
   <svg aria-hidden="true" width="18px" height="18px" focusable="false" data-prefix="fas" data-icon="chevron-down" class="svg-inline--fa fa-chevron-down fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">

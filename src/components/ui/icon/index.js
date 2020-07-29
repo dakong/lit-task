@@ -1,1 +1,1 @@
-import './icon.js';
+import "./icon.js";

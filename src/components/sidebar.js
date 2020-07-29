@@ -1,15 +1,15 @@
-import { LitElement, html, css, property } from 'lit-element';
-import { connect } from 'pwa-helpers/connect-mixin.js';
+import { LitElement, html, css, property } from "lit-element";
+import { connect } from "pwa-helpers/connect-mixin.js";
 
-import { store } from '../stores';
-import { gray200, gray300 } from '../styles/colors';
+import { store } from "../stores";
+import { gray200, gray300 } from "../styles/colors";
 class SidebarPanel extends connect(store)(LitElement) {
   static styles = css`
     :host {
       display: block;
       height: 100%;
-      font-family: 'system-ui';
-      font-size: 1.0rem;
+      font-family: "system-ui";
+      font-size: 1rem;
       cursor: default;
       user-select: none;
     }
@@ -35,14 +35,14 @@ class SidebarPanel extends connect(store)(LitElement) {
     li {
       padding-top: 0.8rem;
       padding-bottom: 0.8rem;
-      padding-left: 4.0rem;
+      padding-left: 4rem;
       border-top-right-radius: 1.5rem;
       border-bottom-right-radius: 1.5rem;
       cursor: pointer;
     }
 
     li:hover {
-      background-color: ${gray200}
+      background-color: ${gray200};
     }
 
     span.section-header {
@@ -56,19 +56,16 @@ class SidebarPanel extends connect(store)(LitElement) {
       padding-bottom: 1px;
       border-bottom: solid 1px black;
     }
-
   `;
 
   @property({ type: Array }) myList = [
-    'Desk setup',
-    'Grocery list',
-    'Work',
-    'Personal',
-    'Errands',
+    "Desk setup",
+    "Grocery list",
+    "Work",
+    "Personal",
+    "Errands",
   ];
-  @property({ type: Array }) list = [
-    'Trash',
-  ];
+  @property({ type: Array }) list = ["Trash"];
 
   renderSidebarItem(text) {
     return html`
@@ -91,10 +88,9 @@ class SidebarPanel extends connect(store)(LitElement) {
         <ul>
           ${this.list.map((item) => this.renderSidebarItem(item))}
         </ul>
-
       </aside>
     `;
   }
 }
 
-customElements.define('sidebar-panel', SidebarPanel);
+customElements.define("sidebar-panel", SidebarPanel);

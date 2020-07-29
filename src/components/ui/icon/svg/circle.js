@@ -1,5 +1,5 @@
-import { svg } from 'lit-element';
-import { blueGray300 } from '../../../../styles/colors';
+import { svg } from "lit-element";
+import { blueGray300 } from "../../../../styles/colors";
 
 export default svg`
   <svg height="24" width="24">

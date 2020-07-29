@@ -1,15 +1,15 @@
-import { html, css, LitElement, property } from 'lit-element';
-import { connect } from 'pwa-helpers/connect-mixin.js';
+import { html, css, LitElement, property } from "lit-element";
+import { connect } from "pwa-helpers/connect-mixin.js";
 
-import { store } from '../stores';
+import { store } from "../stores";
 
-import './ui/loader';
-import './todo-panel';
-import './edit-panel';
+import "./ui/loader";
+import "./todo-panel";
+import "./edit-panel";
 
 class MainPanel extends connect(store)(LitElement) {
   static styles = css`
-  :host {
+    :host {
       width: 100%;
       height: auto;
       display: block;
@@ -22,13 +22,19 @@ class MainPanel extends connect(store)(LitElement) {
     }
   `;
 
-  @property({ type: String }) _panel = 'todo_panel';
+  @property({ type: String }) _panel = "todo_panel";
 
   render() {
     return html`
       <div>
-        <todo-panel class="panel" ?active="${this.panel === 'todo_panel'}"></todo-panel>
-        <edit-panel class="panel" ?active="${this._panel === 'edit_panel'}"></edit-panel>
+        <todo-panel
+          class="panel"
+          ?active="${this.panel === "todo_panel"}"
+        ></todo-panel>
+        <edit-panel
+          class="panel"
+          ?active="${this._panel === "edit_panel"}"
+        ></edit-panel>
       </div>
     `;
   }
@@ -38,4 +44,4 @@ class MainPanel extends connect(store)(LitElement) {
   }
 }
 
-customElements.define('main-panel', MainPanel);
+customElements.define("main-panel", MainPanel);

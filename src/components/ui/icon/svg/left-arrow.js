@@ -1,5 +1,5 @@
-import { svg } from 'lit-html';
-import { blueGray300 } from '../../../../styles/colors';
+import { svg } from "lit-html";
+import { blueGray300 } from "../../../../styles/colors";
 
 export default svg`
   <svg height="18px" width="18px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-left" class="svg-inline--fa fa-arrow-left fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">

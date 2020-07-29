@@ -1,13 +1,13 @@
 const loadAddButtonComponent = function () {
-  import('./components/add-button');
+  import("./components/add-button");
 };
 
 const loadItemComponent = function () {
-  import('./components/item');
+  import("./components/item");
 };
 
 const loadListComponent = function () {
-  import('./components/list');
+  import("./components/list");
 };
 
 const componentLoader = {

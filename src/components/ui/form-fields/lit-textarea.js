@@ -1,13 +1,13 @@
-import { LitElement, html, css, property } from 'lit-element';
+import { LitElement, html, css, property } from "lit-element";
 
-import { blueA200, gray50 } from '../../../styles/colors';
+import { blueA200, gray50 } from "../../../styles/colors";
 
 class LitTextArea extends LitElement {
-  @property({ type: String }) name = '';
-  @property({ type: String }) placeholder = '';
-  @property({ type: String }) value = '';
+  @property({ type: String }) name = "";
+  @property({ type: String }) placeholder = "";
+  @property({ type: String }) value = "";
   @property({ type: Boolean }) focus = false;
-  @property({ type: Number, attribute: 'tab-index' }) tabIndex = 0;
+  @property({ type: Number, attribute: "tab-index" }) tabIndex = 0;
 
   static get styles() {
     return css`
@@ -31,8 +31,9 @@ class LitTextArea extends LitElement {
         width: 100%;
       }
 
-      .underline:after, .underline:before {
-        content:'';
+      .underline:after,
+      .underline:before {
+        content: "";
         height: 2px;
         width: 0;
         bottom: 1px;
@@ -59,8 +60,12 @@ class LitTextArea extends LitElement {
       }
 
       @keyframes expand-width {
-        from {width: 0px;}
-        to {width: 50%; }
+        from {
+          width: 0px;
+        }
+        to {
+          width: 50%;
+        }
       }
     `;
   }
@@ -68,7 +73,7 @@ class LitTextArea extends LitElement {
   onTextareaChange(e) {
     const { value } = e.target;
 
-    let event = new CustomEvent('textarea-change', {
+    let event = new CustomEvent("textarea-change", {
       detail: {
         value,
       },
@@ -78,7 +83,7 @@ class LitTextArea extends LitElement {
   }
 
   focus() {
-    const textArea = this.shadowRoot.querySelector('textarea');
+    const textArea = this.shadowRoot.querySelector("textarea");
     textArea.focus();
   }
 
@@ -89,11 +94,14 @@ class LitTextArea extends LitElement {
           @keyup="${this.onTextareaChange}"
           tabindex="${this.tabIndex}"
           name="${this.name}"
-          placeholder="${this.placeholder}">${this.value}</textarea>
+          placeholder="${this.placeholder}"
+        >
+${this.value}</textarea
+        >
         <span class="underline"></span>
       </div>
     `;
   }
 }
 
-customElements.define('lit-textarea', LitTextArea);
+customElements.define("lit-textarea", LitTextArea);

@@ -1,18 +1,18 @@
-import { LitElement, html, css, property } from 'lit-element';
-import { connect } from 'pwa-helpers/connect-mixin.js';
+import { LitElement, html, css, property } from "lit-element";
+import { connect } from "pwa-helpers/connect-mixin.js";
 
-import TodoDB from '../indexed-db/todo-db';
-import { COLUMN_VALUE, COLUMN_COMMENT } from '../indexed-db/constants';
-import { store } from '../stores';
-import { ENTER_KEY_CODE } from '../constants/key-codes';
+import TodoDB from "../indexed-db/todo-db";
+import { COLUMN_VALUE, COLUMN_COMMENT } from "../indexed-db/constants";
+import { store } from "../stores";
+import { ENTER_KEY_CODE } from "../constants/key-codes";
 
-import { openTodoPanel } from '../stores/navigation/navigation.action-creators';
-import './ui/form-fields/lit-textarea';
+import { openTodoPanel } from "../stores/navigation/navigation.action-creators";
+import "./ui/form-fields/lit-textarea";
 
-import './ui/icon';
-import './ui/underline';
+import "./ui/icon";
+import "./ui/underline";
 
-import { deleteTodo, updateTodo } from '../stores/todos/todos.action-creators';
+import { deleteTodo, updateTodo } from "../stores/todos/todos.action-creators";
 
 class EditPanel extends connect(store)(LitElement) {
   static get styles() {
@@ -22,7 +22,7 @@ class EditPanel extends connect(store)(LitElement) {
         flex-direction: column;
       }
 
-      icon-component[name=trash] {
+      icon-component[name="trash"] {
         float: right;
       }
 
@@ -50,7 +50,7 @@ class EditPanel extends connect(store)(LitElement) {
         margin: 0.8rem auto;
       }
     `;
-  };
+  }
 
   @property({ type: Boolean }) active;
   @property({ type: String }) _uuid;
@@ -63,7 +63,7 @@ class EditPanel extends connect(store)(LitElement) {
         store.dispatch(deleteTodo(id));
         store.dispatch(openTodoPanel());
       })
-      .catch((e) => console.log('error while deleting too: ', e));
+      .catch((e) => console.log("error while deleting too: ", e));
   }
 
   onBackButtonClick() {
@@ -92,8 +92,9 @@ class EditPanel extends connect(store)(LitElement) {
       column,
     };
 
-    TodoDB.update(payload).then((data) => store.dispatch(updateTodo(data)))
-      .catch((e) => console.log('error while updating todo: ', e));
+    TodoDB.update(payload)
+      .then((data) => store.dispatch(updateTodo(data)))
+      .catch((e) => console.log("error while updating todo: ", e));
   }
 
   onTitleChange(e) {
@@ -110,15 +111,17 @@ class EditPanel extends connect(store)(LitElement) {
 
   constructor() {
     super();
-    this.addEventListener('transitionend', () => {
-      console.log('transition end');
+    this.addEventListener("transitionend", () => {
+      console.log("transition end");
     });
   }
 
   onTransitionEnd(e) {
     if (this.active) {
-      const textAreaTitle = this.shadowRoot.querySelector('lit-textarea[name=title]');
-      textAreaTitle.shadowRoot.querySelector('textarea').focus();
+      const textAreaTitle = this.shadowRoot.querySelector(
+        "lit-textarea[name=title]"
+      );
+      textAreaTitle.shadowRoot.querySelector("textarea").focus();
     }
   }
 
@@ -126,18 +129,44 @@ class EditPanel extends connect(store)(LitElement) {
     const tabIndex = this.active ? 0 : -1;
     const hidden = !this.active;
     return html`
-      <div aria-hidden="${hidden}" class="edit-panel" @transitionend="${this.onTransitionEnd}">
+      <div
+        aria-hidden="${hidden}"
+        class="edit-panel"
+        @transitionend="${this.onTransitionEnd}"
+      >
         <div class="edit-header">
-          <icon-component tab-index="${tabIndex}" @click="${this.onBackButtonClick}" @keydown="${this.onBackButtonKeydown}" name="left-arrow"></icon-component>
-          <icon-component tab-index="${tabIndex}" @click="${this.onDeleteButtonClick}" @keydown="${this.onDeleteButtonKeydown}" name="trash"></icon-component>
+          <icon-component
+            tab-index="${tabIndex}"
+            @click="${this.onBackButtonClick}"
+            @keydown="${this.onBackButtonKeydown}"
+            name="left-arrow"
+          ></icon-component>
+          <icon-component
+            tab-index="${tabIndex}"
+            @click="${this.onDeleteButtonClick}"
+            @keydown="${this.onDeleteButtonKeydown}"
+            name="trash"
+          ></icon-component>
         </div>
 
         <div class="textarea">
-          <lit-textarea tab-index="${tabIndex}" @textarea-change="${this.onTitleChange}" name="title" placeholder="Enter title" value="${this._title}"></lit-textarea>
+          <lit-textarea
+            tab-index="${tabIndex}"
+            @textarea-change="${this.onTitleChange}"
+            name="title"
+            placeholder="Enter title"
+            value="${this._title}"
+          ></lit-textarea>
         </div>
 
         <div class="textarea">
-          <lit-textarea tab-index="${tabIndex}" @textarea-change="${this.onCommentChange}" name="title" placeholder="Enter details" value="${this._comment}"></lit-textarea>
+          <lit-textarea
+            tab-index="${tabIndex}"
+            @textarea-change="${this.onCommentChange}"
+            name="title"
+            placeholder="Enter details"
+            value="${this._comment}"
+          ></lit-textarea>
         </div>
       </div>
     `;
@@ -152,4 +181,4 @@ class EditPanel extends connect(store)(LitElement) {
   }
 }
 
-customElements.define('edit-panel', EditPanel);
+customElements.define("edit-panel", EditPanel);

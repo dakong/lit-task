@@ -1,10 +1,10 @@
-import { LitElement, html, css, property } from 'lit-element';
+import { LitElement, html, css, property } from "lit-element";
 
-import { gray50, blueA200 } from '../../../styles/colors';
+import { gray50, blueA200 } from "../../../styles/colors";
 class Loader extends LitElement {
   static styles = css`
     :host {
-      font-family: 'system-ui';
+      font-family: "system-ui";
       display: flex;
       flex-direction: column;
       padding: 0.5rem;
@@ -39,7 +39,7 @@ class Loader extends LitElement {
     }
   `;
 
-  @property({ type: String }) title = '';
+  @property({ type: String }) title = "";
 
   render() {
     return html`
@@ -49,4 +49,4 @@ class Loader extends LitElement {
   }
 }
 
-customElements.define('lit-loader', Loader);
+customElements.define("lit-loader", Loader);

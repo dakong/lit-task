@@ -1,4 +1,4 @@
-import { html, LitElement, css } from 'lit-element';
+import { html, LitElement, css } from "lit-element";
 
 class TodoList extends LitElement {
   static styles = css`
@@ -19,4 +19,4 @@ class TodoList extends LitElement {
   }
 }
 
-customElements.define('todo-list', TodoList);
+customElements.define("todo-list", TodoList);

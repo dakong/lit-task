@@ -1,5 +1,5 @@
-import { html, LitElement, css } from 'lit-element';
-import { blueA200 } from '../../../styles/colors';
+import { html, LitElement, css } from "lit-element";
+import { blueA200 } from "../../../styles/colors";
 
 class TodoUnderline extends LitElement {
   static get styles() {
@@ -10,8 +10,9 @@ class TodoUnderline extends LitElement {
         width: 100%;
       }
 
-      .underline:after, .underline:before {
-        content:'';
+      .underline:after,
+      .underline:before {
+        content: "";
         height: 2px;
         width: 0;
         bottom: 0;
@@ -37,17 +38,19 @@ class TodoUnderline extends LitElement {
       }
 
       @keyframes expand-width {
-        from {width: 0px;}
-        to {width: 50%; }
+        from {
+          width: 0px;
+        }
+        to {
+          width: 50%;
+        }
       }
     `;
-  };
+  }
 
   render() {
-    return html`
-      <span class="underline"></span>
-    `;
+    return html` <span class="underline"></span> `;
   }
 }
 
-customElements.define('todo-underline', TodoUnderline);
+customElements.define("todo-underline", TodoUnderline);

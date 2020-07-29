@@ -1,6 +1,6 @@
-import { LitElement, html, css, property } from 'lit-element';
+import { LitElement, html, css, property } from "lit-element";
 
-import { blueA200 } from '../../../styles/colors';
+import { blueA200 } from "../../../styles/colors";
 class BarLoader extends LitElement {
   static styles = css`
     :host {
@@ -26,18 +26,16 @@ class BarLoader extends LitElement {
         width: 0%;
       }
       to {
-        width: 100%;;
+        width: 100%;
       }
     }
   `;
 
-  @property({ type: String }) title = '';
+  @property({ type: String }) title = "";
 
   render() {
-    return html`
-      <div class="bar"></div>
-    `;
+    return html` <div class="bar"></div> `;
   }
 }
 
-customElements.define('lit-bar-loader', BarLoader);
+customElements.define("lit-bar-loader", BarLoader);

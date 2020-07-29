@@ -1,15 +1,15 @@
-import { html, LitElement, property, css } from 'lit-element';
-import { gray200 } from '../../../styles/colors';
+import { html, LitElement, property, css } from "lit-element";
+import { gray200 } from "../../../styles/colors";
 
-import editIcon from './svg/edit';
-import circleIcon from './svg/circle';
-import doneIcon from './svg/done';
-import addIcon from './svg/add';
-import trashIcon from './svg/trash';
-import leftArrowIcon from './svg/left-arrow';
-import elipsisVertical from './svg/ellipsis-v';
-import chevronUp from './svg/chevron-up';
-import chevronDown from './svg/chevron-down';
+import editIcon from "./svg/edit";
+import circleIcon from "./svg/circle";
+import doneIcon from "./svg/done";
+import addIcon from "./svg/add";
+import trashIcon from "./svg/trash";
+import leftArrowIcon from "./svg/left-arrow";
+import elipsisVertical from "./svg/ellipsis-v";
+import chevronUp from "./svg/chevron-up";
+import chevronDown from "./svg/chevron-down";
 
 class Icon extends LitElement {
   static styles = css`
@@ -34,14 +34,14 @@ class Icon extends LitElement {
       outline: 0;
       background-color: ${gray200};
     }
-`;
+  `;
 
-  @property({ type: String }) id = '';
-  @property({ type: String, reflect: true }) value = '';
+  @property({ type: String }) id = "";
+  @property({ type: String, reflect: true }) value = "";
   @property({ type: Boolean, reflect: true }) checked;
   @property({ type: Boolean }) hover = false;
-  @property({ type: String }) name = '';
-  @property({ type: Number, attribute: 'tab-index' }) tabIndex = 0;
+  @property({ type: String }) name = "";
+  @property({ type: Number, attribute: "tab-index" }) tabIndex = 0;
 
   onIconHover(e) {
     this.hover = true;
@@ -49,23 +49,23 @@ class Icon extends LitElement {
 
   renderIcon() {
     switch (this.name) {
-      case 'circle':
+      case "circle":
         return html`${circleIcon}`;
-      case 'edit':
+      case "edit":
         return html`${editIcon}`;
-      case 'done':
+      case "done":
         return html`${doneIcon}`;
-      case 'add':
+      case "add":
         return html`${addIcon}`;
-      case 'trash':
+      case "trash":
         return html`${trashIcon}`;
-      case 'left-arrow':
+      case "left-arrow":
         return html`${leftArrowIcon}`;
-      case 'elipsis-vertical':
+      case "elipsis-vertical":
         return html`${elipsisVertical}`;
-      case 'chevron-up':
+      case "chevron-up":
         return html`${chevronUp}`;
-      case 'chevron-down':
+      case "chevron-down":
         return html`${chevronDown}`;
     }
   }
@@ -79,4 +79,4 @@ class Icon extends LitElement {
   }
 }
 
-customElements.define('icon-component', Icon);
+customElements.define("icon-component", Icon);
