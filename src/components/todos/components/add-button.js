@@ -42,11 +42,7 @@ class TodoAdd extends connect(store)(LitElement) {
   `;
 
   addNewTodo() {
-    const uuid = uuidv4();
-
-    TodoDB.add(uuid)
-      .then((todo) => store.dispatch(addTodo(todo)))
-      .catch((e) => console.log("error while checking: ", e));
+    store.dispatch(addTodo());
   }
 
   render() {

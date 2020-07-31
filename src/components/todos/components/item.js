@@ -5,11 +5,11 @@ import "../../ui/icon";
 
 import { openEditPanel } from "../../../stores/navigation/navigation.action-creators";
 import {
-  addNewTodo,
-  updateCheckedValue,
-  updateTodoItemValue,
-  deleteTodoItem,
-} from "../utils/dbActions";
+  addTodo,
+  deleteTodoEffect,
+  updateTodoEffect,
+} from "../../../stores/todos/todos.action-creators";
+
 import "../../ui/underline";
 
 import {
@@ -96,7 +96,11 @@ class TodoItem extends LitElement {
         word-wrap: break-word;
         color: ${secondaryText};
         margin: 0.2rem 0;
-        cursor: default;
+        cursor: default;updateTodoEffect({
+          uuid: this.id,
+          value: this.value,
+          column: "value",
+        })
         user-select: none;
       }
 
@@ -146,7 +150,13 @@ class TodoItem extends LitElement {
   // Handle when todo item is checked.
   onChecked(e) {
     this.checked = !this.checked;
-    updateCheckedValue(this.id, this.checked);
+    store.dispatch(
+      updateTodoEffect({
+        uuid: this.id,
+        value: this.value,
+        column: "done",
+      })
+    );
     e.stopPropagation();
   }
 
@@ -155,15 +165,22 @@ class TodoItem extends LitElement {
     const { value } = e.target;
     this.value = value;
     if (e.code === ENTER_KEY_CODE) {
-      addNewTodo();
+      store.dispatch(addTodo());
     } else {
-      updateTodoItemValue(this.id, this.value);
+      // updateTodoItemValue(this.id, this.value);
+      store.dispatch(
+        updateTodoEffect({
+          uuid: this.id,
+          value: this.value,
+          column: "value",
+        })
+      );
     }
   }
 
   // Handle when a todo item is deleted.
   onDelete(e) {
-    deleteTodoItem(this.id);
+    store.dispatch(deleteTodoEffect(this.id));
     e.stopPropagation();
   }
 

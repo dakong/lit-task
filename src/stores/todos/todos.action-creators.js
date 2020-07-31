@@ -1,9 +1,23 @@
-import { ADD_TODO, EDIT_TODO, DELETE_TODO, FETCH_TODO_ITEMS } from './todos.action-types';
+import {
+  ADD_TODO,
+  CREATE_TODO,
+  EDIT_TODO,
+  DELETE_TODO,
+  FETCH_TODO_ITEMS,
+  DELETE_TODO_EFFECT,
+  EDIT_TODO_EFFECT,
+} from "./todos.action-types";
 
-export const addTodo = (todo) => {
+export const addTodo = () => {
+  return {
+    type: ADD_TODO,
+  };
+};
+
+export const createTodo = (todo) => {
   return {
     todo,
-    type: ADD_TODO,
+    type: CREATE_TODO,
   };
 };
 
@@ -14,10 +28,24 @@ export const updateTodo = (todo) => {
   };
 };
 
+export const updateTodoEffect = (payload) => {
+  return {
+    payload,
+    type: EDIT_TODO_EFFECT,
+  };
+};
+
 export const deleteTodo = (uuid) => {
   return {
     uuid,
     type: DELETE_TODO,
+  };
+};
+
+export const deleteTodoEffect = (uuid) => {
+  return {
+    uuid,
+    type: DELETE_TODO_EFFECT,
   };
 };
 
