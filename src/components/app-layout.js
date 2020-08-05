@@ -11,17 +11,6 @@ class AppLayout extends LitElement {
       --app-navbar-height: 64px; */
     }
 
-    .navbar {
-      background-color: white;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: var(--app-navbar-height, 64px);
-      border-bottom: solid 1px ${gray300};
-      z-index: 99999;
-    }
-
     main {
       position: relative;
       padding-top: 1rem;
@@ -55,7 +44,7 @@ class AppLayout extends LitElement {
   render() {
     return html`
       <div class="navbar">
-        <slot name="navbar"></slot>
+        <slot name="header"></slot>
       </div>
       <main>
         <div class="sidebar">

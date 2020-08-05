@@ -55,3 +55,17 @@ export const fetchTodoItems = (todos) => {
     type: FETCH_TODO_ITEMS,
   };
 };
+
+export const fetchAllTodoItems = () => {
+  return {
+    type: "FETCH_ALL_TASKS",
+  };
+};
+
+export const initializeListAndTask = (taskList, tasks) => {
+  return {
+    type: "INITIALIZE_LIST_AND_TASK",
+    taskList,
+    tasks,
+  };
+};

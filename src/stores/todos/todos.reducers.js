@@ -1,6 +1,6 @@
 import * as immutable from "../../utils/immutable";
 import createReducer from "../../utils/create-reducer";
-import { COLUMN_UUID } from "../../indexed-db/constants";
+import { COLUMN_UUID } from "../../services/indexed-db/constants";
 
 import {
   CREATE_TODO,
@@ -26,9 +26,14 @@ const editTodo = (todosState, action) => {
 
 const addAllTodoItems = (todosState, action) => todosState.concat(action.todos);
 
+const initializeListAndTask = (todosState, action) => {
+  return action.tasks;
+};
+
 export default createReducer([], {
   [CREATE_TODO]: addTodo,
   [DELETE_TODO]: deleteTodo,
   [EDIT_TODO]: editTodo,
   [FETCH_TODO_ITEMS]: addAllTodoItems,
+  ["INITIALIZE_LIST_AND_TASK"]: initializeListAndTask,
 });

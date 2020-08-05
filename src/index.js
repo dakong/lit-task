@@ -1,1 +1,2 @@
-import './app';
+console.log("importing app");
+import "./app";

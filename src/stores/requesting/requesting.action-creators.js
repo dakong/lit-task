@@ -1,6 +1,9 @@
-import TodoDB from '../../indexed-db/todo-db';
-import { LOAD_TODOS_STARTED, LOAD_TODOS_COMPLETE } from './requesting.action-types';
-import { fetchTodoItems } from '../todos/todos.action-creators';
+import TodoDB from "../../services/indexed-db/todo-db";
+import {
+  LOAD_TODOS_STARTED,
+  LOAD_TODOS_COMPLETE,
+} from "./requesting.action-types";
+import { fetchTodoItems } from "../todos/todos.action-creators";
 
 const loadTodos = () => {
   return {
@@ -14,20 +17,12 @@ const loadTodosComplete = () => {
   };
 };
 
-const sleep = (timeout) => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(true);
-    }, timeout);
-  });
-};
-
 async function initDB() {
   await TodoDB.initializeDB();
   const todos = await TodoDB.getAll();
   todos.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
   return todos;
-};
+}
 
 export const initializeItems = function () {
   return async (dispatch) => {

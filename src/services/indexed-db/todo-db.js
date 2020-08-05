@@ -1,5 +1,5 @@
 import { openDB } from "idb";
-import { todoItems } from "../data";
+import { todoItems } from "../../data";
 import * as CONSTANTS from "./constants";
 
 class TodoDB {

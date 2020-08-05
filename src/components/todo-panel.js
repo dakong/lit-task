@@ -6,6 +6,7 @@ import { store } from "../stores";
 import todos from "./todos";
 
 import { initializeItems } from "../stores/requesting/requesting.action-creators";
+import { fetchAllTodoItems } from "../stores/todos/todos.action-creators";
 import "./ui/loader";
 import "./ui/loader/bar-loader";
 
@@ -65,11 +66,15 @@ class TodoPanel extends connect(store)(LitElement) {
   }
 
   firstUpdated() {
-    store.dispatch(initializeItems());
+    // store.dispatch(initializeItems());
   }
 
   toggleCompletedList(e) {
     this.showCompleted = !this.showCompleted;
+  }
+
+  fetchGoogleTasks() {
+    store.dispatch(fetchAllTodoItems());
   }
 
   renderLoadingState() {
@@ -80,10 +85,10 @@ class TodoPanel extends connect(store)(LitElement) {
     return html`
       <todo-item
         slot="item"
-        ?checked="${todo.done}"
-        .id="${todo.uuid}"
-        .value="${todo.value}"
-        .comment="${todo.comment}"
+        ?checked="${todo.status === "completed"}"
+        .id="${todo.id}"
+        .value="${todo.title}"
+        .comment="${todo.notes}"
       >
       </todo-item>
     `;
@@ -93,6 +98,7 @@ class TodoPanel extends connect(store)(LitElement) {
     return html`
       <todo-list class="todos">
         <div slot="header">
+          <button @click=${this.fetchGoogleTasks}>Fetch google tasks</button>
           <todo-add></todo-add>
           <icon-component name="elipsis-vertical"></icon-component>
         </div>

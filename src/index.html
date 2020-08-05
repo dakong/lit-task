@@ -1,11 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head lang='en'>
-	<meta charset='utf-8'>
-	<meta name='viewport' content='width=device-width'>
-  	<title>Lit Task</title>
-	<!-- Force polyfills for testing -->
-	<!--
+  <head lang="en">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Lit Task</title>
+    <!-- Force polyfills for testing -->
+    <!--
 	<script>
 		window.ShadyDOM = {
 		force: true
@@ -13,15 +13,20 @@
 		if (window.customElements) customElements.forcePolyfill = true;
 	</script>
 	-->
-	<script src="webcomponents-loader.js"></script>
-	<script src='index.js'></script>
-	<style>
-			body {
-				margin: 0;
-			}
-	</style>
-</head>
-<body>
-	<main-app></main-app>
-</body>
+    <script src="webcomponents-loader.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Authorize and fetch tasks from google api</h1>
+    <!--Add buttons to initiate auth sequence and sign out-->
+    <button id="authorize-button" style="display: none;">Authorize</button>
+    <button id="signout-button" style="display: none;">Sign Out</button>
+    <main-app></main-app>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="components.bundle.js"></script>
+  </body>
 </html>

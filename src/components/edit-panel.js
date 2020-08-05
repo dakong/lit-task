@@ -1,8 +1,8 @@
 import { LitElement, html, css, property } from "lit-element";
 import { connect } from "pwa-helpers/connect-mixin.js";
 
-import TodoDB from "../indexed-db/todo-db";
-import { COLUMN_VALUE, COLUMN_COMMENT } from "../indexed-db/constants";
+import TodoDB from "../services/indexed-db/todo-db";
+import { COLUMN_VALUE, COLUMN_COMMENT } from "../services/indexed-db/constants";
 import { store } from "../stores";
 import { ENTER_KEY_CODE } from "../constants/key-codes";
 

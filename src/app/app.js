@@ -1,7 +1,7 @@
-import { LitElement, html, css } from 'lit-element';
-import '../components/main-panel';
-import '../components/sidebar';
-import '../components/app-layout';
+import { LitElement, html, css } from "lit-element";
+import "../components/main-panel";
+import "../components/sidebar";
+import "../components/app-layout";
 
 class MainApp extends LitElement {
   static styles = css`
@@ -22,4 +22,4 @@ class MainApp extends LitElement {
   }
 }
 
-customElements.define('main-app', MainApp);
+customElements.define("main-app", MainApp);

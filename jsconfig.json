@@ -1,18 +1,11 @@
 {
-    "compilerOptions": {
-		"experimentalDecorators": true,
-        "module": "commonjs",
-        "target": "es2016",
-        "jsx": "preserve",
-        "baseUrl": "."
-    },
-    "exclude": [
-        "node_modules",
-        "**/node_modules/*",
-        "build",
-        "build/*"
-    ],
-    "include": [
-        "./src/**/*.js"
-    ]
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "target": "es2016",
+    "jsx": "preserve",
+    "baseUrl": "."
+  },
+  "exclude": ["node_modules", "**/node_modules/*", "build", "build/*"],
+  "include": ["./src/**/*.js"]
 }
