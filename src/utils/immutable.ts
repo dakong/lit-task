@@ -7,7 +7,7 @@ export const insertItemInList = (list = [], position = -1, newItem = {}) =>
       ]
     : list;
 
-export const removeItemInList = (list = [], condition = (item) => true) =>
+export const removeItemInList = (list = [], condition = () => true) =>
   list.filter(condition);
 
 export const updateObject = (oldObject = {}, newValues = {}) => ({
@@ -17,11 +17,11 @@ export const updateObject = (oldObject = {}, newValues = {}) => ({
 
 export const updateItemInList = (
   list = [],
-  key,
-  value,
-  updateItemCallback = (item) => item
+  key: string,
+  value: any,
+  updateItemCallback = (item: any) => item
 ) =>
-  list.map((item) => {
+  list.map((item: any) => {
     if (!item.hasOwnProperty(key) || item[key] !== value) {
       return item;
     }

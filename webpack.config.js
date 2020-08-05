@@ -22,17 +22,30 @@ module.exports = {
     filename: "[name].bundle.js",
     path: BUILD_DIR,
   },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
   module: {
     rules: [
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            plugins: [
+              "@babel/plugin-proposal-class-properties",
+              ["@babel/proposal-decorators", { decoratorsBeforeExport: true }],
+            ],
+          },
+        },
+      },
       {
         test: /\.tsx?$/,
         use: "ts-loader",
         exclude: /node_modules/,
       },
     ],
-    resolve: {
-      extensions: [".tsx", ".ts", ".js"],
-    },
   },
   plugins: [
     new CopyPlugin([

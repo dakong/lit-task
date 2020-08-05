@@ -1,26 +1,33 @@
 import { gapiConfig } from "../../config";
+import { GoogleTaskList } from "../interfaces/google-tasklists";
+import { GoogleTasks } from "../interfaces/google-tasks";
+
 const GOOGLE_APIS_TASK_ENDPOINT = "https://www.googleapis.com/tasks/v1";
 const scopes = "https://www.googleapis.com/auth/tasks";
 
 /** Included for testing purposes */
-let authorizeButton = document.getElementById("authorize-button");
-let signoutButton = document.getElementById("signout-button");
-async function updateSigninStatus(isSignedIn) {
+let authorizeButton: HTMLElement | null = document.getElementById(
+  "authorize-button"
+);
+let signoutButton: HTMLElement | null = document.getElementById(
+  "signout-button"
+);
+
+async function updateSigninStatus(isSignedIn: boolean) {
   if (isSignedIn) {
-    authorizeButton.style.display = "none";
-    signoutButton.style.display = "block";
+    if (authorizeButton) authorizeButton.style.display = "none";
+    if (signoutButton) signoutButton.style.display = "block";
   } else {
-    authorizeButton.style.display = "block";
-    signoutButton.style.display = "none";
+    if (authorizeButton) authorizeButton.style.display = "block";
+    if (signoutButton) signoutButton.style.display = "none";
   }
 }
 /************/
 
 /**
  * Initializes the gapi client.
- * @return {void}
  */
-async function start() {
+async function start(): Promise<void> {
   try {
     await gapi.client.init({
       apiKey: gapiConfig.apiKey,
@@ -32,9 +39,8 @@ async function start() {
 
     // Handle the initial sign-in state.
     updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-
-    authorizeButton.onclick = signIn;
-    signoutButton.onclick = signOut;
+    if (authorizeButton) authorizeButton.onclick = signIn;
+    if (signoutButton) signoutButton.onclick = signOut;
   } catch (e) {
     console.log("error initializing gapi client ", e);
   }
@@ -42,47 +48,69 @@ async function start() {
 
 /**
  * Initiates sign in to google account through OAuth
- * @return {void}
  */
-function signIn() {
+function signIn(): void {
   gapi.auth2.getAuthInstance().signIn();
 }
 
 /**
  * Initiates sign out of google account through OAuth
  */
-function signOut() {
+function signOut(): void {
   gapi.auth2.getAuthInstance().signOut();
 }
 
 /**
  * Initializes the Google API client on load.
- * @return {void}
  */
-function initializeGapi() {
+function initializeGapi(): void {
   gapi.load("client", start);
 }
 
 /**
  * Creates a gapi client request object for fetching tasks by listID.
- * @param {string} listID
- * @returns {goog.Thenable}
+ *
+ * @param listID - The listID to create the client request for.
+ * @returns The Client Request for the https://www.googleapis.com/tasks/v1/lists/${listID}/tasks endpoint.
  */
-function createGetTaskByListIDRequest(listID) {
+function createGetTaskByListIDRequest(
+  listID: string
+): gapi.client.HttpRequest<any> {
   return gapi.client.request({
     path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${listID}/tasks`,
   });
 }
 
 /**
- * Fetches all tasks for the given listID(s)
- * @async
- * @param {string|string[]>} listID
+ * Fetches tasks for a single task list.
+ *
+ * @param listID - The listID associated with the tasks to fetch.
+ * @returns A promise that will resolve to a list of tasks.
  */
-async function getAllTasks(listID) {
+async function getTasksByListID(listID: string): Promise<GoogleTasks[]> {
+  try {
+    let response = await gapi.client.request({
+      path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${listID}/tasks`,
+    });
+    return response.result.items;
+  } catch (e) {
+    console.log("Error fetching tasks: ", e);
+    return [];
+  }
+}
+
+/**
+ * Fetches all tasks for the given listID(s)
+ *
+ * @param listID - Can be a single listID or a list of ListID's to fetch tasks for.
+ * @returns A promise that will resolve to a mapping of listID to a list of tasks.
+ */
+async function getAllTasks(
+  listID: string | string[]
+): Promise<{ [key: string]: GoogleTasks[] }> {
   if (Array.isArray(listID)) {
     try {
-      const batch = new gapi.client.HttpBatch();
+      const batch = gapi.client.newBatch();
       listID.forEach((id) =>
         batch.add(createGetTaskByListIDRequest(id), { id, callback: () => {} })
       );
@@ -96,20 +124,22 @@ async function getAllTasks(listID) {
       return result;
     } catch (e) {
       console.log("Error fetching batched tasks: ", e);
-      return [];
+      return {};
     }
   } else {
-    return await getTasksByListID(listID);
+    const tasks = await getTasksByListID(listID);
+    return {
+      listId: tasks,
+    };
   }
 }
 
 /**
  * Get all of the users lists.
- * @async
- * @returns {Promise<>}
+ *
+ * @returns A promise that will resolve to a list of tasklists.
  */
-async function getAllLists() {
-  console.log(gapi);
+async function getAllLists(): Promise<GoogleTaskList[]> {
   try {
     let response = await gapi.client.request({
       path: `${GOOGLE_APIS_TASK_ENDPOINT}/users/@me/lists`,
@@ -118,19 +148,7 @@ async function getAllLists() {
   } catch (e) {
     console.log("Error fetching lists: ", e);
   }
-  return null;
-}
-
-async function getTasksByListID(listID) {
-  try {
-    let response = await gapi.client.request({
-      path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${listID}/tasks`,
-    });
-    return response.result.items;
-  } catch (e) {
-    console.log("Error fetching tasks: ", e);
-    return [];
-  }
+  return [];
 }
 
 initializeGapi();
@@ -138,7 +156,6 @@ initializeGapi();
 const googleTaskService = {
   getAllLists,
   getAllTasks,
-  getTasksByListID,
 };
 
 export default googleTaskService;
