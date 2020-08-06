@@ -1,6 +1,9 @@
 import { gapiConfig } from "../../config";
 
 import { RestResponse } from "../interfaces/rest-response";
+import { GoogleTask } from "../interfaces/google-task";
+import { GoogleTaskList } from "../interfaces/google-tasklist";
+
 import Logger from "../utils/logger";
 
 const GOOGLE_APIS_TASK_ENDPOINT = "https://www.googleapis.com/tasks/v1";
@@ -49,15 +52,19 @@ async function start(): Promise<void> {
     });
 
     gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-    const newTaskList = await insertTaskList("foo");
-    console.log(newTaskList);
-    if (newTaskList) {
-      const updatedTaskList = await renameTaskList(
-        newTaskList.result.id,
-        "bar"
-      );
-      console.log(updatedTaskList);
-      await deleteTaskList(newTaskList.result.id);
+    let runSimpleTests = false;
+    if (runSimpleTests) {
+      const newTaskList = await insertTaskList("foo");
+      await renameTaskList(newTaskList.result.id, "bar");
+
+      const newTask = await insertTask(newTaskList.result.id, {
+        title: "my new task",
+        notes: "this is my comment",
+      });
+
+      await deleteTask(newTaskList.result.id, newTask.result.id);
+
+      // await deleteTaskList(newTaskList.result.id);
     }
 
     // Handle the initial sign-in state.
@@ -102,49 +109,6 @@ function createGetTaskByListIDRequest(
   return gapi.client.request({
     path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${listID}/tasks`,
   });
-}
-
-/**
- * Fetches tasks for a single task list.
- *
- * @param listID - The listID associated with the tasks to fetch.
- * @returns A promise that will resolve to a list of tasks.
- */
-async function getTasksByListID(listID: string): Promise<RestResponse> {
-  try {
-    let response = await gapi.client.request({
-      path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${listID}/tasks`,
-    });
-    return createRestResponse(response.result, response.status);
-  } catch (e) {
-    Logger.Error(e);
-    return createRestResponse(e.result, e.status, e.errorMessage);
-  }
-}
-
-/**
- * Fetches all tasks for the given listID(s)
- *
- * @param listID - Can be a single listID or a list of ListID's to fetch tasks for.
- * @returns A promise that will resolve to a mapping of listID to a list of tasks.
- */
-async function getAllTasks(listID: string | string[]): Promise<RestResponse> {
-  if (Array.isArray(listID)) {
-    try {
-      const batch = gapi.client.newBatch();
-      listID.forEach((id) =>
-        batch.add(createGetTaskByListIDRequest(id), { id, callback: () => {} })
-      );
-      const response = await batch.then();
-      return createRestResponse(response.result, response.status);
-    } catch (e) {
-      Logger.Error(e);
-      return createRestResponse(e.result, e.status, e.errorMessage);
-    }
-  } else {
-    const response = await getTasksByListID(listID);
-    return createRestResponse(response.result, response.status);
-  }
 }
 
 /**
@@ -213,12 +177,117 @@ async function deleteTaskList(id: string): Promise<RestResponse> {
   }
 }
 
+/**
+ * Fetches tasks for a single task list.
+ *
+ * @param listID - The listID associated with the tasks to fetch.
+ * @returns A promise that will resolve to a list of tasks.
+ */
+async function getTasksByListID(listID: string): Promise<RestResponse> {
+  try {
+    let response = await gapi.client.request({
+      path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${listID}/tasks`,
+    });
+    return createRestResponse(response.result, response.status);
+  } catch (e) {
+    Logger.Error(e);
+    return createRestResponse(e.result, e.status, e.errorMessage);
+  }
+}
+
+/**
+ * Fetches all tasks for the given listID(s)
+ *
+ * @param listID - Can be a single listID or a list of ListID's to fetch tasks for.
+ * @returns A promise that will resolve to a mapping of listID to a list of tasks.
+ */
+async function getAllTasks(listID: string | string[]): Promise<RestResponse> {
+  if (Array.isArray(listID)) {
+    try {
+      const batch = gapi.client.newBatch();
+      listID.forEach((id) =>
+        batch.add(createGetTaskByListIDRequest(id), { id, callback: () => {} })
+      );
+      const response = await batch.then();
+      return createRestResponse(response.result, response.status);
+    } catch (e) {
+      Logger.Error(e);
+      return createRestResponse(e.result, e.status, e.errorMessage);
+    }
+  } else {
+    const response = await getTasksByListID(listID);
+    return createRestResponse(response.result, response.status);
+  }
+}
+
+async function insertTask(
+  taskListID: string,
+  payload: GoogleTask,
+  parent?: string,
+  previous?: string
+): Promise<RestResponse> {
+  try {
+    let response = await gapi.client.request({
+      path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${taskListID}/tasks`,
+      method: "POST",
+      params: {
+        parent,
+        previous,
+      },
+      body: payload,
+    });
+    return createRestResponse(response.result, response.status);
+  } catch (e) {
+    Logger.Error(e);
+    return createRestResponse(e.result, e.status, e.errorMessage);
+  }
+}
+
+async function updateTask(
+  taskListID: string,
+  taskID: string,
+  payload: GoogleTask
+): Promise<RestResponse> {
+  try {
+    let response = await gapi.client.request({
+      path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${taskListID}/tasks/${taskID}`,
+      method: "PUT",
+      body: payload,
+    });
+    return createRestResponse(response.result, response.status);
+  } catch (e) {
+    Logger.Error(e);
+    return createRestResponse(e.result, e.status, e.errorMessage);
+  }
+}
+
+async function deleteTask(
+  taskListID: string,
+  taskID: string
+): Promise<RestResponse> {
+  try {
+    let response = await gapi.client.request({
+      path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${taskListID}/tasks/${taskID}`,
+      method: "DELETE",
+    });
+    return createRestResponse(response.result, response.status);
+  } catch (e) {
+    Logger.Error(e);
+    return createRestResponse(e.result, e.status, e.errorMessage);
+  }
+}
+
 initializeGapi();
 
 const googleTaskService = {
   getAllLists,
-  getAllTasks,
   insertTaskList,
+  renameTaskList,
+  deleteTaskList,
+  getAllTasks,
+  insertTask,
+  updateTask,
+  deleteTask,
 };
 
 export default googleTaskService;
