@@ -1,12 +1,10 @@
-import { LitElement, html, property, css } from "lit-element";
+import { LitElement, html, property, css, customElement } from "lit-element";
 import { repeat } from "lit-html/directives/repeat";
 import { connect } from "pwa-helpers/connect-mixin.js";
 
 import { store } from "../stores";
 import todos from "./todos";
 
-import { initializeItems } from "../stores/requesting/requesting.action-creators";
-import { fetchAllTodoItems } from "../stores/todos/todos.action-creators";
 import "./ui/loader";
 import "./ui/loader/bar-loader";
 
@@ -16,6 +14,7 @@ todos.componentLoader.addButton();
 todos.componentLoader.list();
 todos.componentLoader.item();
 
+@customElement("todo-panel")
 class TodoPanel extends connect(store)(LitElement) {
   static styles = css`
     :host {
@@ -55,9 +54,13 @@ class TodoPanel extends connect(store)(LitElement) {
     }
   `;
   @property({ type: Boolean }) active = false;
+
   @property({ type: String }) listID = "";
+
   @property({ type: Array }) todoList = [];
+
   @property({ type: Boolean }) isLoading = false;
+
   @property({ type: Boolean }) showCompleted = true;
 
   stateChanged(state) {
@@ -65,11 +68,7 @@ class TodoPanel extends connect(store)(LitElement) {
     this.isLoading = state.requesting.isLoadingTodos;
   }
 
-  firstUpdated() {
-    // store.dispatch(initializeItems());
-  }
-
-  toggleCompletedList(e) {
+  toggleCompletedList() {
     this.showCompleted = !this.showCompleted;
   }
 
@@ -141,4 +140,9 @@ class TodoPanel extends connect(store)(LitElement) {
   }
 }
 
-customElements.define("todo-panel", TodoPanel);
+// customElements.define("todo-panel", TodoPanel);
+declare global {
+  interface HTMLElementTagNameMap {
+    "todo-panel": TodoPanel;
+  }
+}

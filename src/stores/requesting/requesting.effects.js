@@ -9,7 +9,7 @@ import logger from "../../utils/logger";
 function* gapiInitialize() {
   try {
     yield put(gapiLoadStart());
-    const result = yield call(googleTaskService.initializeGapi);
+    yield call(googleTaskService.initializeGapi);
     yield put(gapiLoadComplete());
     yield put(fetchAllTodoItems());
   } catch (e) {

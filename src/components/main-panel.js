@@ -4,7 +4,7 @@ import { connect } from "pwa-helpers/connect-mixin.js";
 import { store } from "../stores";
 
 import "./ui/loader";
-import "./todo-panel";
+import "./todo-panel.ts";
 import "./edit-panel";
 
 class MainPanel extends connect(store)(LitElement) {
