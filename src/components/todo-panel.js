@@ -73,10 +73,6 @@ class TodoPanel extends connect(store)(LitElement) {
     this.showCompleted = !this.showCompleted;
   }
 
-  fetchGoogleTasks() {
-    store.dispatch(fetchAllTodoItems());
-  }
-
   renderLoadingState() {
     return html`<lit-bar-loader title="Loading your todos"></lit-bar-loader>`;
   }
@@ -98,7 +94,6 @@ class TodoPanel extends connect(store)(LitElement) {
     return html`
       <todo-list class="todos">
         <div slot="header">
-          <button @click=${this.fetchGoogleTasks}>Fetch google tasks</button>
           <todo-add></todo-add>
           <icon-component name="elipsis-vertical"></icon-component>
         </div>

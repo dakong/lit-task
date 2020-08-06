@@ -1,5 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 import { gray300 } from "../styles/colors";
+import { store } from "../stores";
+import { gapiInitialize } from "../stores/requesting/requesting.action-creators";
 
 /**
  * Outer shell for the app. It determines the main layout of the application
@@ -40,6 +42,16 @@ class AppLayout extends LitElement {
       min-width: 375px;
     }
   `;
+
+  connectedCallback() {
+    super.connectedCallback();
+    console.log("i am connected");
+    store.dispatch(gapiInitialize());
+  }
+
+  firstUpdated() {
+    console.log("i am first updated");
+  }
 
   render() {
     return html`

@@ -2,12 +2,14 @@ import { gapiConfig } from "../../config";
 
 import { RestResponse } from "../interfaces/rest-response";
 import { GoogleTask } from "../interfaces/google-task";
-import { GoogleTaskList } from "../interfaces/google-tasklist";
 
 import Logger from "../utils/logger";
 
 const GOOGLE_APIS_TASK_ENDPOINT = "https://www.googleapis.com/tasks/v1";
 const scopes = "https://www.googleapis.com/auth/tasks";
+
+type ResolveAny = (...args: any[]) => void;
+type RejectAny = (...args: any[]) => void;
 
 function createRestResponse(
   result: any,
@@ -43,37 +45,25 @@ async function updateSigninStatus(isSignedIn: boolean) {
 /**
  * Initializes the gapi client.
  */
-async function start(): Promise<void> {
-  try {
-    await gapi.client.init({
+function start(onSuccess, onError): void {
+  gapi.client
+    .init({
       apiKey: gapiConfig.apiKey,
       clientId: gapiConfig.clientID,
       scope: scopes,
-    });
-
-    gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-    let runSimpleTests = false;
-    if (runSimpleTests) {
-      const newTaskList = await insertTaskList("foo");
-      await renameTaskList(newTaskList.result.id, "bar");
-
-      const newTask = await insertTask(newTaskList.result.id, {
-        title: "my new task",
-        notes: "this is my comment",
-      });
-
-      await deleteTask(newTaskList.result.id, newTask.result.id);
-
-      // await deleteTaskList(newTaskList.result.id);
-    }
-
-    // Handle the initial sign-in state.
-    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-    if (authorizeButton) authorizeButton.onclick = signIn;
-    if (signoutButton) signoutButton.onclick = signOut;
-  } catch (e) {
-    console.log("error initializing gapi client ", e);
-  }
+    })
+    .then(
+      () => {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+        console.log("initialized");
+        // Handle the initial sign-in state.
+        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        if (authorizeButton) authorizeButton.onclick = signIn;
+        if (signoutButton) signoutButton.onclick = signOut;
+        onSuccess();
+      },
+      (e) => onError(e)
+    );
 }
 
 /**
@@ -93,8 +83,19 @@ function signOut(): void {
 /**
  * Initializes the Google API client on load.
  */
-function initializeGapi(): void {
-  gapi.load("client", start);
+function initializeGapi(): Promise<any> {
+  const gapiLoadPromise = new Promise(
+    (resolve: ResolveAny, reject: RejectAny) => {
+      const runStart = () =>
+        start(
+          () => resolve(),
+          (e) => reject(e)
+        );
+      gapi.load("client", runStart);
+    }
+  );
+
+  return gapiLoadPromise;
 }
 
 /**
@@ -277,9 +278,11 @@ async function deleteTask(
   }
 }
 
-initializeGapi();
-
 const googleTaskService = {
+  initializeGapi,
+  signIn,
+  signOut,
+
   getAllLists,
   insertTaskList,
   renameTaskList,
