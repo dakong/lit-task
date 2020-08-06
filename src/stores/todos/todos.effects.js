@@ -49,11 +49,16 @@ function* fetchAllTasksEffect() {
   try {
     const lists = yield call(googleTaskService.getAllLists);
     console.log(lists);
-    const listIDs = lists.map((item) => item.id);
+    const listIDs = lists.result.items.map((item) => item.id);
     const allTasks = yield call(googleTaskService.getAllTasks, listIDs);
     console.log(allTasks);
 
-    yield put(initializeListAndTask(lists, Object.values(allTasks)[0]));
+    yield put(
+      initializeListAndTask(
+        lists,
+        Object.values(allTasks.result)[0].result.items
+      )
+    );
   } catch (e) {
     console.log("error while fetching all todos: ", e);
   }

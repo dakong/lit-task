@@ -1,9 +1,22 @@
 import { gapiConfig } from "../../config";
-import { GoogleTaskList } from "../interfaces/google-tasklists";
-import { GoogleTasks } from "../interfaces/google-tasks";
+
+import { RestResponse } from "../interfaces/rest-response";
+import Logger from "../utils/logger";
 
 const GOOGLE_APIS_TASK_ENDPOINT = "https://www.googleapis.com/tasks/v1";
 const scopes = "https://www.googleapis.com/auth/tasks";
+
+function createRestResponse(
+  result: any,
+  status?: number,
+  errorMessage?: string
+): RestResponse {
+  return {
+    result,
+    status,
+    errorMessage,
+  };
+}
 
 /** Included for testing purposes */
 let authorizeButton: HTMLElement | null = document.getElementById(
@@ -36,6 +49,16 @@ async function start(): Promise<void> {
     });
 
     gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+    const newTaskList = await insertTaskList("foo");
+    console.log(newTaskList);
+    if (newTaskList) {
+      const updatedTaskList = await renameTaskList(
+        newTaskList.result.id,
+        "bar"
+      );
+      console.log(updatedTaskList);
+      await deleteTaskList(newTaskList.result.id);
+    }
 
     // Handle the initial sign-in state.
     updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
@@ -87,15 +110,15 @@ function createGetTaskByListIDRequest(
  * @param listID - The listID associated with the tasks to fetch.
  * @returns A promise that will resolve to a list of tasks.
  */
-async function getTasksByListID(listID: string): Promise<GoogleTasks[]> {
+async function getTasksByListID(listID: string): Promise<RestResponse> {
   try {
     let response = await gapi.client.request({
       path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${listID}/tasks`,
     });
-    return response.result.items;
+    return createRestResponse(response.result, response.status);
   } catch (e) {
-    console.log("Error fetching tasks: ", e);
-    return [];
+    Logger.Error(e);
+    return createRestResponse(e.result, e.status, e.errorMessage);
   }
 }
 
@@ -105,32 +128,22 @@ async function getTasksByListID(listID: string): Promise<GoogleTasks[]> {
  * @param listID - Can be a single listID or a list of ListID's to fetch tasks for.
  * @returns A promise that will resolve to a mapping of listID to a list of tasks.
  */
-async function getAllTasks(
-  listID: string | string[]
-): Promise<{ [key: string]: GoogleTasks[] }> {
+async function getAllTasks(listID: string | string[]): Promise<RestResponse> {
   if (Array.isArray(listID)) {
     try {
       const batch = gapi.client.newBatch();
       listID.forEach((id) =>
         batch.add(createGetTaskByListIDRequest(id), { id, callback: () => {} })
       );
-
       const response = await batch.then();
-      let { result } = response;
-
-      for (const taskList in result) {
-        result[taskList] = result[taskList].result.items;
-      }
-      return result;
+      return createRestResponse(response.result, response.status);
     } catch (e) {
-      console.log("Error fetching batched tasks: ", e);
-      return {};
+      Logger.Error(e);
+      return createRestResponse(e.result, e.status, e.errorMessage);
     }
   } else {
-    const tasks = await getTasksByListID(listID);
-    return {
-      listId: tasks,
-    };
+    const response = await getTasksByListID(listID);
+    return createRestResponse(response.result, response.status);
   }
 }
 
@@ -139,16 +152,65 @@ async function getAllTasks(
  *
  * @returns A promise that will resolve to a list of tasklists.
  */
-async function getAllLists(): Promise<GoogleTaskList[]> {
+async function getAllLists(): Promise<RestResponse> {
   try {
     let response = await gapi.client.request({
       path: `${GOOGLE_APIS_TASK_ENDPOINT}/users/@me/lists`,
     });
-    return response.result.items;
+    return createRestResponse(response.result, response.status);
   } catch (e) {
-    console.log("Error fetching lists: ", e);
+    Logger.Error(e);
+    return createRestResponse(e.result, e.status, e.errorMessage);
   }
-  return [];
+}
+
+async function insertTaskList(title: string): Promise<RestResponse> {
+  try {
+    let response = await gapi.client.request({
+      path: `${GOOGLE_APIS_TASK_ENDPOINT}/users/@me/lists`,
+      method: "POST",
+      body: {
+        title,
+      },
+    });
+    return createRestResponse(response.result, response.status);
+  } catch (e) {
+    Logger.Error(e);
+    return createRestResponse(e.status, e.result, e.result.error.message);
+  }
+}
+
+async function renameTaskList(
+  id: string,
+  title: string
+): Promise<RestResponse> {
+  try {
+    let response = await gapi.client.request({
+      path: `${GOOGLE_APIS_TASK_ENDPOINT}/users/@me/lists/${id}`,
+      method: "PUT",
+      body: {
+        id,
+        title,
+      },
+    });
+    return createRestResponse(response.result, response.status);
+  } catch (e) {
+    Logger.Error(e);
+    return createRestResponse(e.result, e.status, e.errorMessage);
+  }
+}
+
+async function deleteTaskList(id: string): Promise<RestResponse> {
+  try {
+    let response = await gapi.client.request({
+      path: `${GOOGLE_APIS_TASK_ENDPOINT}/users/@me/lists/${id}`,
+      method: "DELETE",
+    });
+    return createRestResponse(response.result, response.status);
+  } catch (e) {
+    Logger.Error(e);
+    return createRestResponse(e.result, e.status, e.errorMessage);
+  }
 }
 
 initializeGapi();
@@ -156,6 +218,7 @@ initializeGapi();
 const googleTaskService = {
   getAllLists,
   getAllTasks,
+  insertTaskList,
 };
 
 export default googleTaskService;
