@@ -92,8 +92,6 @@ class TodoPanel extends connect(store)(LitElement) {
   }
 
   renderTodoItem(todo) {
-    console.log("render todo item");
-    console.log(this.tasklistID);
     return html`
       <todo-item
         slot="item"

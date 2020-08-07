@@ -45,12 +45,7 @@ class AppLayout extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    console.log("i am connected");
     store.dispatch(gapiInitialize());
-  }
-
-  firstUpdated() {
-    console.log("i am first updated");
   }
 
   render() {

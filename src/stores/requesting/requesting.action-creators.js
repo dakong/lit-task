@@ -5,7 +5,6 @@ import {
   GAPI_LOAD_COMPLETED,
   GAPI_INITIALIZE,
 } from "./requesting.action-types";
-import { fetchTodoItems } from "../todos/todos.action-creators";
 
 const loadTodos = () => {
   return {

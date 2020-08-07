@@ -62,8 +62,8 @@ class TodoDB {
 
         self
           .populateDemoData(db)
-          .then(() => console.log("*** Successfully generated demo data"))
-          .catch((e) => console.log(e));
+          .then(() => logger.Info("*** Successfully generated demo data"))
+          .catch((e) => logger.Info(e));
       },
     });
   }
@@ -136,7 +136,7 @@ class TodoDB {
         uuid: await this.database.put(this.storeName, newVal),
       };
     } catch (e) {
-      console.log(e);
+      logger.Info(e);
       throw new Error(`Unable to update the task: ${e.message}`);
     }
   }

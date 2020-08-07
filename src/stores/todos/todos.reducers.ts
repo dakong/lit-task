@@ -7,84 +7,69 @@ import {
   CREATE_TODO,
   EDIT_TODO,
   DELETE_TODO,
-  FETCH_TODO_ITEMS,
+  INITIALIZE_LIST_AND_TASK,
 } from "./todos.action-types";
-import googleTaskService from "../../services/google-tasks";
 
 interface TodoReduxState {
   tasklist: GoogleTaskList[];
-  tasks: GoogleTask[];
+  tasks: { [tasklistID: string]: GoogleTask[] };
   selectedTasklist: string;
 }
 
-const addTodo = (todosState, action) => {
-  const { task, tasklistID } = action;
-  const { tasks } = todosState;
-  const updatedTasks = immutable.insertItemInList(tasks[tasklistID], 0, task);
-
+function updateTasksStore(taskState: TodoReduxState, tasklistID, updatedTasks) {
+  const { tasks } = taskState;
   return {
-    ...todosState,
-    tasks: {
-      ...googleTaskService,
-      [tasklistID]: updatedTasks,
-    },
-  };
-};
-
-const deleteTodo = (todosState, action) => {
-  const { tasklistID, taskID } = action;
-  const { tasks } = todosState;
-  const updatedTasks = immutable.removeItemInList(
-    tasks[tasklistID],
-    (task) => task.id !== taskID
-  );
-
-  return {
-    ...todosState,
+    ...taskState,
     tasks: {
       ...tasks,
       [tasklistID]: updatedTasks,
     },
   };
-};
-
-const editTodo = (todosState, action) => {
-  const { tasklistID, taskID, payload } = action;
-  const { tasks } = todosState;
-
-  const updatedTasks = immutable.updateItemInList(
-    tasks[tasklistID],
-    (item) => item.id === taskID,
-    (item) => ({ ...item, ...payload })
-  );
-
-  return {
-    ...todosState,
-    tasks: {
-      ...tasks,
-      [tasklistID]: updatedTasks,
-    },
-  };
-};
-
-const addAllTodoItems = (_todosState: TodoReduxState, action) => {};
-
-const initializeListAndTask = (_todosState: TodoReduxState, action) => {
-  const { tasklist, tasks, selectedTasklist } = action;
-  return {
-    tasklist,
-    tasks,
-    selectedTasklist,
-  };
-};
+}
 
 export default createReducer(
   { tasklist: "", selectedTasklist: "", tasks: {} },
   {
-    [CREATE_TODO]: addTodo,
-    [DELETE_TODO]: deleteTodo,
-    [EDIT_TODO]: editTodo,
-    [FETCH_TODO_ITEMS]: addAllTodoItems,
-    ["INITIALIZE_LIST_AND_TASK"]: initializeListAndTask,
+    [CREATE_TODO]: (todosState: TodoReduxState, action) => {
+      const { task, tasklistID } = action;
+      const { tasks } = todosState;
+      const updatedTasks = immutable.insertItemInList(
+        tasks[tasklistID],
+        task,
+        0
+      );
+
+      return updateTasksStore(todosState, tasklistID, updatedTasks);
+    },
+    [DELETE_TODO]: (todosState: TodoReduxState, action) => {
+      const { tasklistID, taskID } = action;
+      const { tasks } = todosState;
+      const updatedTasks = immutable.removeItemInList(
+        tasks[tasklistID],
+        (task) => task.id !== taskID
+      );
+
+      return updateTasksStore(todosState, tasklistID, updatedTasks);
+    },
+    [EDIT_TODO]: (todosState: TodoReduxState, action) => {
+      const { tasklistID, taskID, payload } = action;
+      const { tasks } = todosState;
+
+      const updatedTasks = immutable.updateItemInList(
+        tasks[tasklistID],
+        (item) => item.id === taskID,
+        (item) => ({ ...item, ...payload })
+      );
+
+      return updateTasksStore(todosState, tasklistID, updatedTasks);
+    },
+    [INITIALIZE_LIST_AND_TASK]: (_todosState: TodoReduxState, action) => {
+      const { tasklist, tasks, selectedTasklist } = action;
+      return {
+        tasklist,
+        tasks,
+        selectedTasklist,
+      };
+    },
   }
 );

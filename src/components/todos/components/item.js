@@ -5,7 +5,7 @@ import "../../ui/icon";
 
 import { openEditPanel } from "../../../stores/navigation/navigation.action-creators";
 import {
-  addTodo,
+  insertTodoEffect,
   deleteTodoEffect,
   updateTodoEffect,
 } from "../../../stores/todos/todos.action-creators";
@@ -162,16 +162,17 @@ class TodoItem extends LitElement {
     const { value } = e.target;
     this.value = value;
     if (e.code === ENTER_KEY_CODE) {
-      store.dispatch(addTodo());
+      // @TODO: Pass in position here
+      store.dispatch(insertTodoEffect(this.tasklistID));
     } else {
       // updateTodoItemValue(this.id, this.value);
-      store.dispatch(
-        updateTodoEffect({
-          uuid: this.id,
-          value: this.value,
-          column: "value",
-        })
-      );
+      // store.dispatch(
+      //   updateTodoEffect({
+      //     uuid: this.id,
+      //     value: this.value,
+      //     column: "value",
+      //   })
+      // );
     }
   }
 

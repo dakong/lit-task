@@ -1,19 +1,13 @@
 import {
-  ADD_TODO,
   CREATE_TODO,
   EDIT_TODO,
   DELETE_TODO,
-  FETCH_TODO_ITEMS,
+  INITIALIZE_LIST_AND_TASK,
   DELETE_TODO_EFFECT,
   EDIT_TODO_EFFECT,
   INSERT_TODO_EFFECT,
+  FETCH_TASKS_AND_TASKLISTS_EFFECT,
 } from "./todos.action-types";
-
-export const addTodo = () => {
-  return {
-    type: ADD_TODO,
-  };
-};
 
 export const createTodo = (tasklistID, task) => {
   return {
@@ -40,6 +34,15 @@ export const deleteTodo = (tasklistID, taskID) => {
   };
 };
 
+export const initializeListAndTask = (tasklist, tasks, selectedTasklist) => {
+  return {
+    type: INITIALIZE_LIST_AND_TASK,
+    tasklist,
+    tasks,
+    selectedTasklist,
+  };
+};
+
 export const updateTodoEffect = (taskID, tasklistID, payload) => {
   return {
     taskID,
@@ -57,16 +60,9 @@ export const deleteTodoEffect = (tasklistID, taskID) => {
   };
 };
 
-export const fetchTodoItems = (todos) => {
+export const fetchTasksAndTasklistsEffect = () => {
   return {
-    todos,
-    type: FETCH_TODO_ITEMS,
-  };
-};
-
-export const fetchAllTodoItems = () => {
-  return {
-    type: "FETCH_ALL_TASKS",
+    type: FETCH_TASKS_AND_TASKLISTS_EFFECT,
   };
 };
 
@@ -77,14 +73,5 @@ export const insertTodoEffect = (tasklistID, payload, parent, previous) => {
     parent,
     previous,
     type: INSERT_TODO_EFFECT,
-  };
-};
-
-export const initializeListAndTask = (tasklist, tasks, selectedTasklist) => {
-  return {
-    type: "INITIALIZE_LIST_AND_TASK",
-    tasklist,
-    tasks,
-    selectedTasklist,
   };
 };

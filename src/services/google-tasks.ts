@@ -4,6 +4,7 @@ import { RestResponse } from "../interfaces/rest-response";
 import { GoogleTask } from "../interfaces/google-task";
 
 import Logger from "../utils/logger";
+import logger from "../utils/logger";
 
 const GOOGLE_APIS_TASK_ENDPOINT = "https://www.googleapis.com/tasks/v1";
 const scopes = "https://www.googleapis.com/auth/tasks";
@@ -55,7 +56,7 @@ function start(onSuccess, onError): void {
     .then(
       () => {
         gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-        console.log("initialized");
+        logger.Info("initialized");
         // Handle the initial sign-in state.
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
         if (authorizeButton) authorizeButton.onclick = signIn;
@@ -250,9 +251,6 @@ async function updateTask(
   payload: GoogleTask
 ): Promise<RestResponse> {
   try {
-    console.log(taskListID);
-    console.log(taskID);
-    console.log(payload);
     let response = await gapi.client.request({
       path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${taskListID}/tasks/${taskID}`,
       method: "PUT",

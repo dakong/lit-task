@@ -11,6 +11,7 @@ import "./ui/icon";
 import "./ui/underline";
 
 import { updateTodo } from "../stores/todos/todos.action-creators";
+import logger from "../utils/logger";
 
 class EditPanel extends connect(store)(LitElement) {
   static get styles() {
@@ -99,7 +100,7 @@ class EditPanel extends connect(store)(LitElement) {
   constructor() {
     super();
     this.addEventListener("transitionend", () => {
-      console.log("transition end");
+      logger.Info("transition end");
     });
   }
 
