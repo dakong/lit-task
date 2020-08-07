@@ -1,42 +1,57 @@
-import { openDB } from "idb";
-import { todoItems } from "../../data";
-import * as CONSTANTS from "./constants";
+import { openDB, IDBPDatabase } from "idb";
+import { todoItems } from "../data";
+import logger from "../utils/logger";
+
+export const COLUMN_UUID = "uuid";
+export const COLUMN_DONE = "done";
+export const COLUMN_VALUE = "value";
+export const COLUMN_COMMENT = "comment";
+export const COLUMN_DATETIME = "datetime";
 
 class TodoDB {
-  database;
+  database: IDBPDatabase | undefined;
+  dbName: string;
+  storeName: string;
+  version: number;
 
-  constructor(dbName, storeName, version) {
+  private static COLUMN = {
+    UUID: "uuid",
+    DONE: "done",
+    VALUE: "value",
+    COMMENT: "comment",
+    DATETIME: "datetime",
+  };
+
+  constructor(dbName: string, storeName: string, version: number) {
     this.dbName = dbName;
     this.storeName = storeName;
     this.version = version;
   }
-
   async initializeDB() {
     const self = this;
 
     this.database = await openDB(this.dbName, this.version, {
       async upgrade(db, oldversion, newversion, transaction) {
+        if (oldversion !== newversion) {
+          logger.Log("Upgrading database");
+        }
         try {
           const store = await db.createObjectStore(self.storeName, {
-            keyPath: CONSTANTS.COLUMN_UUID,
+            keyPath: TodoDB.COLUMN.UUID,
           });
 
-          store.createIndex(CONSTANTS.COLUMN_DONE, CONSTANTS.COLUMN_DONE, {
+          store.createIndex(TodoDB.COLUMN.DONE, TodoDB.COLUMN.DONE, {
             unique: false,
           });
-          store.createIndex(CONSTANTS.COLUMN_VALUE, CONSTANTS.COLUMN_VALUE, {
+          store.createIndex(TodoDB.COLUMN.VALUE, TodoDB.COLUMN.VALUE, {
             unique: false,
           });
-          store.createIndex(
-            CONSTANTS.COLUMN_COMMENT,
-            CONSTANTS.COLUMN_COMMENT,
-            { unique: false }
-          );
-          store.createIndex(
-            CONSTANTS.COLUMN_DATETIME,
-            CONSTANTS.COLUMN_DATETIME,
-            { unique: false }
-          );
+          store.createIndex(TodoDB.COLUMN.COMMENT, TodoDB.COLUMN.COMMENT, {
+            unique: false,
+          });
+          store.createIndex(TodoDB.COLUMN.DATETIME, TodoDB.COLUMN.DATETIME, {
+            unique: false,
+          });
 
           await transaction.done;
         } catch (e) {
@@ -67,14 +82,17 @@ class TodoDB {
 
   async getAll() {
     try {
+      if (!this.database) throw new Error("Database is not initialized");
       return await this.database.getAll(this.storeName);
     } catch (e) {
-      throw new Error("Unable to get all task items");
+      throw new Error(`Unable to get all task items: ${e.message}`);
     }
   }
 
-  async add(uuid) {
+  async add(uuid: string) {
     try {
+      if (!this.database) throw new Error("Database is not initialized");
+
       const newTodo = {
         uuid,
         datetime: new Date().toUTCString(),
@@ -82,24 +100,28 @@ class TodoDB {
         done: false,
         comment: "",
       };
-      console.log(this);
       await this.database.add(this.storeName, newTodo);
       return newTodo;
     } catch (e) {
-      throw new Error(`Unable to create a new task: ${e}`);
+      throw new Error(`Unable to create a new task: ${e.message}`);
     }
   }
 
-  async get(uuid) {
+  async get(uuid: string) {
     try {
+      if (!this.database) throw new Error("Database is not initialized");
       return await this.database.get(this.storeName, uuid);
     } catch (e) {
-      throw new Error(`Unable to get the task with uuid: ${uuid}`);
+      throw new Error(
+        `Unable to get the task with uuid, ${uuid}: ${e.message}`
+      );
     }
   }
 
-  async update(payload) {
+  async update(payload: { uuid: string; column: string; value: string }) {
     try {
+      if (!this.database) throw new Error("Database is not initialized");
+
       const { uuid, column, value } = payload;
       const oldVal = await this.get(uuid);
 
@@ -115,15 +137,18 @@ class TodoDB {
       };
     } catch (e) {
       console.log(e);
-      throw new Error(`Unable to update the task`);
+      throw new Error(`Unable to update the task: ${e.message}`);
     }
   }
 
-  async delete(uuid) {
+  async delete(uuid: string) {
     try {
+      if (!this.database) throw new Error("Database is not initialized");
       return await this.database.delete(this.storeName, uuid);
     } catch (e) {
-      throw new Error(`Unable to delete the task with uuid: ${uuid}`);
+      throw new Error(
+        `Unable to delete the task with uuid, ${uuid}: ${e.message}`
+      );
     }
   }
 }

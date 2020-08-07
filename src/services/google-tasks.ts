@@ -250,6 +250,9 @@ async function updateTask(
   payload: GoogleTask
 ): Promise<RestResponse> {
   try {
+    console.log(taskListID);
+    console.log(taskID);
+    console.log(payload);
     let response = await gapi.client.request({
       path: `${GOOGLE_APIS_TASK_ENDPOINT}/lists/${taskListID}/tasks/${taskID}`,
       method: "PUT",

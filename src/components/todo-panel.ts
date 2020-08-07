@@ -4,11 +4,14 @@ import { connect } from "pwa-helpers/connect-mixin.js";
 
 import { store } from "../stores";
 import todos from "./todos";
+import { insertTodoEffect } from "../stores/todos/todos.action-creators";
 
 import "./ui/loader";
 import "./ui/loader/bar-loader";
 
 import "./ui/icon";
+import logger from "../utils/logger";
+import { GoogleTask } from "../interfaces/google-task";
 
 todos.componentLoader.addButton();
 todos.componentLoader.list();
@@ -63,8 +66,16 @@ class TodoPanel extends connect(store)(LitElement) {
 
   @property({ type: Boolean }) showCompleted = true;
 
+  @property({ type: String }) tasklistID = "";
+
   stateChanged(state) {
-    this.todoList = state.todos;
+    const { tasks, selectedTasklist } = state.todos;
+
+    this.todoList = tasks.hasOwnProperty(selectedTasklist)
+      ? tasks[selectedTasklist]
+      : [];
+    this.tasklistID = selectedTasklist;
+    logger.Info(tasks, selectedTasklist);
     this.isLoading = state.requesting.isLoadingTodos;
   }
 
@@ -76,7 +87,13 @@ class TodoPanel extends connect(store)(LitElement) {
     return html`<lit-bar-loader title="Loading your todos"></lit-bar-loader>`;
   }
 
+  addNewTodo() {
+    store.dispatch(insertTodoEffect(this.tasklistID));
+  }
+
   renderTodoItem(todo) {
+    console.log("render todo item");
+    console.log(this.tasklistID);
     return html`
       <todo-item
         slot="item"
@@ -84,6 +101,7 @@ class TodoPanel extends connect(store)(LitElement) {
         .id="${todo.id}"
         .value="${todo.title}"
         .comment="${todo.notes}"
+        tasklistID="${this.tasklistID}"
       >
       </todo-item>
     `;
@@ -93,10 +111,14 @@ class TodoPanel extends connect(store)(LitElement) {
     return html`
       <todo-list class="todos">
         <div slot="header">
-          <todo-add></todo-add>
+          <todo-add @click="${this.addNewTodo}></todo-add>
           <icon-component name="elipsis-vertical"></icon-component>
         </div>
-        ${repeat(todos, (todos) => todos.uuid, this.renderTodoItem)}
+        ${repeat(
+          todos,
+          (todos: GoogleTask) => todos.id,
+          this.renderTodoItem.bind(this)
+        )}
       </todo-list>
     `;
   }

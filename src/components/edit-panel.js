@@ -1,8 +1,6 @@
 import { LitElement, html, css, property } from "lit-element";
 import { connect } from "pwa-helpers/connect-mixin.js";
 
-import TodoDB from "../services/indexed-db/todo-db";
-import { COLUMN_VALUE, COLUMN_COMMENT } from "../services/indexed-db/constants";
 import { store } from "../stores";
 import { ENTER_KEY_CODE } from "../constants/key-codes";
 
@@ -12,7 +10,7 @@ import "./ui/form-fields/lit-textarea";
 import "./ui/icon";
 import "./ui/underline";
 
-import { deleteTodo, updateTodo } from "../stores/todos/todos.action-creators";
+import { updateTodo } from "../stores/todos/todos.action-creators";
 
 class EditPanel extends connect(store)(LitElement) {
   static get styles() {
@@ -57,14 +55,7 @@ class EditPanel extends connect(store)(LitElement) {
   @property({ type: String }) _title;
   @property({ type: String }) _comment;
 
-  deleteTodoItem(id) {
-    TodoDB.delete(id)
-      .then((data) => {
-        store.dispatch(deleteTodo(id));
-        store.dispatch(openTodoPanel());
-      })
-      .catch((e) => console.log("error while deleting too: ", e));
-  }
+  deleteTodoItem(id) {}
 
   onBackButtonClick() {
     store.dispatch(openTodoPanel());
@@ -91,22 +82,18 @@ class EditPanel extends connect(store)(LitElement) {
       value,
       column,
     };
-
-    TodoDB.update(payload)
-      .then((data) => store.dispatch(updateTodo(data)))
-      .catch((e) => console.log("error while updating todo: ", e));
   }
 
   onTitleChange(e) {
     const { value } = e.detail;
     this._title = value;
-    this.updateTodoItem(this._uuid, this._title, COLUMN_VALUE);
+    this.updateTodoItem(this._uuid, this._title);
   }
 
   onCommentChange(e) {
     const { value } = e.detail;
     this._comment = value;
-    this.updateTodoItem(this._uuid, this._comment, COLUMN_COMMENT);
+    this.updateTodoItem(this._uuid, this._comment);
   }
 
   constructor() {

@@ -5,7 +5,7 @@ import createSagaMiddleWare from "redux-saga";
 import { all } from "redux-saga/effects";
 import { lazyReducerEnhancer } from "pwa-helpers/lazy-reducer-enhancer.js";
 
-import todosReducer from "./todos/todos.reducers";
+import todosReducer from "./todos/todos.reducers.ts";
 import todosEffects from "./todos/todos.effects";
 import navigationReducer from "./navigation/navigation.reducers";
 import requestingReducer from "./requesting/requesting.reducers";

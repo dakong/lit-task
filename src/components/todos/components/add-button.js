@@ -3,13 +3,12 @@ import { connect } from "pwa-helpers/connect-mixin.js";
 import uuidv4 from "uuid/v4";
 
 import { store } from "../../../stores";
-import TodoDB from "../../../services/indexed-db/todo-db";
 
-import { addTodo } from "../../../stores/todos/todos.action-creators";
+import { insertTodoEffect } from "../../../stores/todos/todos.action-creators";
 import "../../ui/icon";
 import { blueGray50, primaryText } from "../../../styles/colors";
 
-class TodoAdd extends connect(store)(LitElement) {
+class TodoAdd extends LitElement {
   static styles = css`
     :host {
       display: block;
@@ -41,13 +40,9 @@ class TodoAdd extends connect(store)(LitElement) {
     }
   `;
 
-  addNewTodo() {
-    store.dispatch(addTodo());
-  }
-
   render() {
     return html`
-      <div class="add-button" @click="${this.addNewTodo}">
+      <div class="add-button"">
         <icon-component name="add"></icon-component>
         <p>Add a task</p>
       </div>

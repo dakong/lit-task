@@ -1,4 +1,3 @@
-import TodoDB from "../../services/indexed-db/todo-db";
 import {
   LOAD_TODOS_STARTED,
   LOAD_TODOS_COMPLETE,
@@ -35,25 +34,5 @@ export const gapiLoadComplete = () => {
 export const gapiInitialize = () => {
   return {
     type: GAPI_INITIALIZE,
-  };
-};
-
-async function initDB() {
-  await TodoDB.initializeDB();
-  const todos = await TodoDB.getAll();
-  todos.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
-  return todos;
-}
-
-export const initializeItems = function () {
-  return async (dispatch) => {
-    try {
-      dispatch(loadTodos());
-      const todos = await initDB();
-      dispatch(fetchTodoItems(todos));
-      dispatch(loadTodosComplete());
-    } catch (e) {
-      console.log(e);
-    }
   };
 };

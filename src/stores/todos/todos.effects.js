@@ -4,6 +4,7 @@ import {
   ADD_TODO,
   DELETE_TODO_EFFECT,
   EDIT_TODO_EFFECT,
+  INSERT_TODO_EFFECT,
 } from "./todos.action-types";
 import {
   createTodo,
@@ -11,41 +12,48 @@ import {
   updateTodo,
   initializeListAndTask,
 } from "./todos.action-creators";
-import TodoDB from "../../services/indexed-db/todo-db";
 import googleTaskService from "../../services/google-tasks";
 // for testing purposes
 const sleep = (ms, msg) =>
   new Promise((resolve) => setTimeout(() => resolve(msg), ms));
 
-function* createTodoEffect() {
+const normalizeList = (list) => (Array.isArray(list) ? list : []);
+
+function* insertTodoEffect({ tasklistID, payload, parent, previous }) {
   try {
-    const uuid = uuidv4();
-    const todo = yield call(TodoDB.add.bind(TodoDB), uuid);
-    yield put(createTodo(todo));
+    const response = yield call(
+      googleTaskService.insertTask,
+      tasklistID,
+      payload,
+      parent,
+      previous
+    );
+
+    yield put(createTodo(tasklistID, response.result));
   } catch (e) {
     console.log("error while adding todo: ", e);
   }
 }
 
-function* deleteTodoEffect({ uuid }) {
+function* deleteTodoEffect({ tasklistID, taskID }) {
   try {
-    yield put(deleteTodo(uuid));
-    yield call(TodoDB.delete.bind(TodoDB), uuid);
+    yield put(deleteTodo(tasklistID, taskID));
+    yield call(googleTaskService.deleteTask, tasklistID, taskID);
   } catch (e) {
     console.log("error while deleting too: ", e);
   }
 }
 
-function* editTodoEffect({ payload }) {
+function* editTodoEffect({ tasklistID, taskID, payload }) {
   try {
-    const updatedTodo = yield call(TodoDB.update.bind(TodoDB), payload);
-    yield put(updateTodo(updatedTodo));
+    yield put(updateTodo(tasklistID, taskID, payload));
+    yield call(googleTaskService.updateTask, tasklistID, taskID, payload);
   } catch (e) {
     console.log("error while updating todo: ", e);
   }
 }
 
-function* fetchAllTasksEffect() {
+function* fetchAllTasksEffect(payload) {
   try {
     const lists = yield call(googleTaskService.getAllLists);
     console.log(lists);
@@ -53,19 +61,25 @@ function* fetchAllTasksEffect() {
     const allTasks = yield call(googleTaskService.getAllTasks, listIDs);
     console.log(allTasks);
 
-    yield put(
-      initializeListAndTask(
-        lists,
-        Object.values(allTasks.result)[0].result.items
-      )
-    );
+    const tasklist = Object.keys(allTasks.result);
+    let tasks = {};
+
+    Object.entries(allTasks.result).forEach(([key, value]) => {
+      tasks[key] = normalizeList(value.result.items);
+    });
+
+    // @TODO: Store this value in indexedb or local storage.
+    // Default to first item in tasklist for now.
+    const selectedTasklist = tasklist[0];
+
+    yield put(initializeListAndTask(tasklist, tasks, selectedTasklist));
   } catch (e) {
     console.log("error while fetching all todos: ", e);
   }
 }
 
 export default function* todosEffects() {
-  yield takeEvery(ADD_TODO, createTodoEffect);
+  yield takeEvery(INSERT_TODO_EFFECT, insertTodoEffect);
   yield takeEvery(DELETE_TODO_EFFECT, deleteTodoEffect);
   yield takeEvery(EDIT_TODO_EFFECT, editTodoEffect);
   yield takeEvery("FETCH_ALL_TASKS", fetchAllTasksEffect);

@@ -96,11 +96,7 @@ class TodoItem extends LitElement {
         word-wrap: break-word;
         color: ${secondaryText};
         margin: 0.2rem 0;
-        cursor: default;updateTodoEffect({
-          uuid: this.id,
-          value: this.value,
-          column: "value",
-        })
+        cursor: default;
         user-select: none;
       }
 
@@ -146,15 +142,16 @@ class TodoItem extends LitElement {
   @property({ type: String, reflect: false }) comment = "";
   @property({ type: Boolean, reflect: true }) checked;
   @property({ type: Boolean, reflect: true }) focused = false;
+  @property({ type: String, reflect: true }) tasklistID = false;
 
   // Handle when todo item is checked.
   onChecked(e) {
-    this.checked = !this.checked;
     store.dispatch(
-      updateTodoEffect({
-        uuid: this.id,
-        value: this.value,
-        column: "done",
+      updateTodoEffect(this.id, this.tasklistID, {
+        status: !this.checked ? "completed" : "action",
+        id: this.id,
+        title: this.value,
+        notes: this.comment,
       })
     );
     e.stopPropagation();
@@ -180,7 +177,7 @@ class TodoItem extends LitElement {
 
   // Handle when a todo item is deleted.
   onDelete(e) {
-    store.dispatch(deleteTodoEffect(this.id));
+    store.dispatch(deleteTodoEffect(this.tasklistID, this.id));
     e.stopPropagation();
   }
 
